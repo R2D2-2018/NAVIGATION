@@ -5,6 +5,10 @@ int main() {
 
     hwlib::wait_ms(1000);
     hwlib::cout << "Hello world!" << hwlib::endl;
-
+    int i = 0;
+    while (true) {
+        i++;
+        hwlib::cout << i << "<>";
+    }
     return 0;
 }
