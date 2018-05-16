@@ -8,12 +8,12 @@
 #ifndef VECTOR2F_HPP
 #define VECTOR2F_HPP
 
-class Vector2f
-{
-public:
-    Vector2f(float y, float x):x(x), y(y) {}
-	float x;
-	float y;
+class Vector2f {
+  public:
+    Vector2f(float x, float y) : x(x), y(y) {
+    }
+    float x;
+    float y;
 };
 
 #endif
