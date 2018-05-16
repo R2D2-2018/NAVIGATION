@@ -1,3 +1,10 @@
+/**
+ * @file
+ * @brief     NavigationEngine Class
+ * @author    Quinten Perquin
+ * @license   See LICENSE
+ */
+
 #ifndef NAVIGATION_ENGINE_HPP
 #define NAVIGATION_ENGINE_HPP
 

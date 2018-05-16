@@ -1,3 +1,10 @@
+/**
+ * @file
+ * @brief     IOInterfaceListener Class
+ * @author    Quinten Perquin
+ * @license   See LICENSE
+ */
+
 #ifndef IO_INTERFACE_LISTENER_HPP
 #define IO_INTERFACE_LISTENER_HPP
 

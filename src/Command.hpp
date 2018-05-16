@@ -1,6 +1,13 @@
+/**
+ * @file
+ * @brief     Command class
+ * @author    Quinten Perquin
+ * @license   See LICENSE
+ */
+
 #ifndef COMMAND_HPP
 #define COMMAND_HPP
-#include "Vector.hpp"
+#include "Vector2f.hpp"
 
 class Command
 {
