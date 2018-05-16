@@ -5,12 +5,13 @@
 
 class IOInterfaceListener;
 
-class IOInterface
-{
-public:
-    IOInterface(){}
-private:
-	IOInterfaceListener &listener;
+class IOInterface {
+  public:
+    IOInterface(IOInterfaceListener &listener) : listener(listener) {
+    }
+
+  private:
+    IOInterfaceListener &listener;
 };
 
 #endif
