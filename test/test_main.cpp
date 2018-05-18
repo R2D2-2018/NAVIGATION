@@ -1,5 +1,5 @@
 #define CATCH_CONFIG_MAIN // This tells Catch to provide a main() - only do this in one cpp file
-#include "/root/Desktop/r2d2/Build-environment/modules/NAVIGATION/src/Navigation_Path.hpp"
+#include "src/Navigation_Path.hpp"
 #include "catch.hpp"
 
 TEST_CASE("Example Test Case") {
