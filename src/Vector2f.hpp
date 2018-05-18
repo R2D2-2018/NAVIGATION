@@ -10,6 +10,8 @@
 
 class Vector2f {
   public:
+    Vector2f() {
+    }
     Vector2f(float x, float y) : x(x), y(y) {
     }
     float x;

@@ -8,6 +8,7 @@ int main() {
     NavigationEngine engine;
     IOInterface interface(engine);
     hwlib::wait_ms(1000);
+    engine.run();
     Vector2f point1(1.5, 5.6);
     hwlib::cout << int(point1.x) << ',' << int(point1.y) << hwlib::endl;
     hwlib::cout << "HWLIB does not support floats.." << hwlib::endl;

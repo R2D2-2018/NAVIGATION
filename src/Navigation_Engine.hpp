@@ -13,12 +13,11 @@
 
 class NavigationEngine : public IOInterfaceListener {
   public:
-    NavigationEngine() {
-    }
+    NavigationEngine();
+    void run();
 
   private:
-    void onReceive(const Command &command) {
-    }
+    void onReceive(const Command &command);
     PositionModule positionModule;
 };
 
