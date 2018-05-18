@@ -1,6 +1,6 @@
 /**
  * @file
- * @brief     NavigationEngine Class
+ * @brief     NavigationPath Class
  * @author    Quinten Perquin
  * @license   See LICENSE
  */

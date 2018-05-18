@@ -1,5 +1,5 @@
 #define CATCH_CONFIG_MAIN // This tells Catch to provide a main() - only do this in one cpp file
-#include "src/Navigation_Path.hpp"
+#include "../src/Navigation_Path.hpp"
 #include "catch.hpp"
 
 TEST_CASE("Example Test Case") {
@@ -27,6 +27,6 @@ TEST_CASE("Navigation Path in/out test", "[navigation_path]") {
     REQUIRE(testLocation2.y == 5);
     REQUIRE(testLocation3.x == -1);
     REQUIRE(testLocation3.y == -8);
-    REQUIRE(testLocation4.x == 99.1);
-    REQUIRE(testLocation4.y == 101.2);
+    REQUIRE(testLocation4.x == 99.1f);
+    REQUIRE(testLocation4.y == 101.2f);
 }
