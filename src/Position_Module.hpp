@@ -8,16 +8,16 @@
 #ifndef POSITION_MODULE_HPP
 #define POSITION_MODULE_HPP
 
-#include "MPU9250_Interface.hpp"
+//#include "MPU9250_Interface.hpp"
 #include "Vector2f.hpp"
 
 class PositionModule {
   public:
-    PositionModule() {
-    }
+    PositionModule(){}
 
   private:
-    MPU9250Interface MPU;
+    
+    //MPU9250Interface MPU( hwlib::target::pin_oc & scl, hwlib::target::pin_oc & sda);
 };
 
 #endif
