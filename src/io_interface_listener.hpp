@@ -8,14 +8,14 @@
 #ifndef IO_INTERFACE_LISTENER_HPP
 #define IO_INTERFACE_LISTENER_HPP
 
-#include "Command.hpp"
+#include "command.hpp"
 
 class IOInterfaceListener {
     /**
      * @brief virtual listener function called when receiving events.
      *
+     * virtual function called when receiving events. See IOInterface
      *
-     * [BLANK]
      * @param[in]    command    a const Command reference
      * @return void
      */
