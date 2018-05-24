@@ -1,23 +1,30 @@
-language: c++
+language: generic
 sudo: required
-
-compiler:
-  - gcc
+dist: trusty
   
 python:
   - "2.7"
 
-install:
-  - sudo pip2 install lizard -q # Cyclomatic Complexity Check Tool
-
 addons:
   apt:
+    sources:
+      - ubuntu-toolchain-r-test
+      - llvm-toolchain-precise
     packages:
       - cmake
       - valgrind
+      - gcc-5
+      - g++-5
+      - clang-format-5.0
+
+install:
+  - sudo pip2 install lizard -q # Cyclomatic Complexity Check Tool
+  - sudo unlink /usr/bin/gcc && sudo ln -s /usr/bin/gcc-5 /usr/bin/gcc # Change symlinks of gcc to gcc-5
+  - sudo unlink /usr/bin/g++ && sudo ln -s /usr/bin/g++-5 /usr/bin/g++ # Change symlinks of g++ to g++-5
 
 before_script:
   - gcc --version
+  - g++ --version
   - python --version
   - cmake --version
   - valgrind --version
