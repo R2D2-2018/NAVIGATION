@@ -10,9 +10,16 @@
 
 #include "Command.hpp"
 
-class IOInterfaceListener
-{
-	virtual void onReceive(const Command& command);
+class IOInterfaceListener {
+    /**
+     * @brief virtual listener function called when receiving events.
+     *
+     *
+     * [BLANK]
+     * @param[in]    command    a const Command reference
+     * @return void
+     */
+    virtual void onReceive(const Command &command);
 };
 
 #endif
