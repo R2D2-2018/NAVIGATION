@@ -4,15 +4,21 @@ include (${build_environment}/flags.cmake)
 
 include_directories (src/)
 
+add_definitions (-DBMPTK_TARGET_test
+                 -DBMPTK_TARGET=test
+                 -DBMPTK_BAUDRATE=19200)
+
 set (sources ${sources}
     ${unit_test_main}
-	../src/Navigation_Path.cpp
+    src/libc-stub.cpp
+    src/navigation_engine.cpp
 )
 
 set (build_test build_test)
 set (unit_test unit_test)
 set (memcheck memcheck)
 set (complexity_test complexity_test)
+set (clangformat_test clangformat_test)
 
 add_definitions (-DBMPTK_TARGET_test
                  -DBMPTK_TARGET=test
@@ -66,6 +72,13 @@ set_tests_properties (
 )
 endif (UNIX AND memcheck_enabled)
 endif (test_build)
+
+if (clang_format_test_enabled)
+add_test (
+	NAME ${clangformat_test}
+	COMMAND python2 ${PROJECT_SOURCE_DIR}/.clang-format-compare.py ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/test
+)
+endif (clang_format_test_enabled)
 
 # The target that is compiled for:
 include (${toolchain}/targets/test/test.cmake)

@@ -11,5 +11,4 @@ include_directories (${catch}/single_include)
 # Source Files:
 
 set (sources
-    src/libc-stub.cpp
 )

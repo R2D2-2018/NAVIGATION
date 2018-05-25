@@ -27,6 +27,7 @@ set (build_test_enabled TRUE)
 set (unit_test_enabled TRUE)
 set (complexity_test_enabled TRUE)
 set (memcheck_enabled TRUE)
+set (clang_format_test_enabled TRUE)
 set (unit_test_main test/test_main.cpp)
 
 if (NOT ${test_build})

@@ -2,7 +2,8 @@ include (${build_environment}/flags.cmake)
 
 set (sources ${sources}
     src/main.cpp
-    src/wrap-hwlib.hpp
+    src/wrap-hwlib.cpp
+    src/libc-stub.cpp
 )
 
 add_definitions (-DBMPTK_TARGET_arduino_due
