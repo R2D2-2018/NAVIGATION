@@ -8,11 +8,18 @@
 #ifndef POSITION_MODULE_HPP
 #define POSITION_MODULE_HPP
 
-#include "MPU9250_Interface.hpp"
-#include "Vector2f.hpp"
+#include "mpu9250_interface.hpp"
+#include "vector2f.hpp"
 
 class PositionModule {
   public:
+    /**
+     * @brief creates a PositionModule object
+     *
+     * Constructor for a PositionModule object without arguments.
+     *
+     * @return a PositionModule object
+     */
     PositionModule() {
     }
 
