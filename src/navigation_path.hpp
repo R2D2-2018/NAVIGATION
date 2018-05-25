@@ -8,7 +8,7 @@
 #ifndef NAVIGATION_PATH_HPP
 #define NAVIGATION_PATH_HPP
 
-#include "Vector2f.hpp"
+#include "vector2f.hpp"
 #include <vector>
 
 class NavigationPath {

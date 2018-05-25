@@ -22,6 +22,7 @@ class NavigationEngine : public IOInterfaceListener {
      */
     NavigationEngine() {
     }
+    void run();
 
   private:
     /**

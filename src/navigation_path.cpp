@@ -1,4 +1,4 @@
-#include "Navigation_Path.hpp"
+#include "navigation_path.hpp"
 
 NavigationPath::NavigationPath() {
 }

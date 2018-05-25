@@ -10,6 +10,17 @@
 
 class Vector2f {
   public:
+
+    /**
+     * @brief creates a Vector2f object
+     *
+     * Constructor for a Vector2f object with no arguments.
+     *
+     * @return a Vector2f object
+     */
+    Vector2f() {
+    }
+
     /**
      * @brief creates a Vector2f object
      *
