@@ -16,6 +16,7 @@ class NavigationPath {
     NavigationPath();
     void addPathLocation(Vector2f location);
     Vector2f getNextLocation();
+    int getPathLength();
 
   private:
     Vector2f path[50];

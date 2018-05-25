@@ -5,7 +5,6 @@ option (test_build "test_build" FALSE)
 # Toolchain:
 
 set (build_environment "$ENV{R2D2_BUILD_ENVIRONMENT}") # Your path to kvasir_toolchain
-
 if (build_environment)
 set (toolchain ${build_environment}/toolchain)
 else (build_environment)

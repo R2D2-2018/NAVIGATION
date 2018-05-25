@@ -1,6 +1,6 @@
 #define CATCH_CONFIG_MAIN // This tells Catch to provide a main() - only do this in one cpp file
-#include "src/navigation_path.hpp"
 #include "catch.hpp"
+#include "src/navigation_path.hpp"
 
 TEST_CASE("Example Test Case") {
     REQUIRE(10 == 10);

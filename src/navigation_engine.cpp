@@ -1,6 +1,7 @@
 #include "navigation_engine.hpp"
 #include "navigation_path.hpp"
 #include "wrap-hwlib.hpp"
+#include <cmath>
 #include <string>
 
 NavigationEngine::NavigationEngine() {
@@ -9,18 +10,17 @@ NavigationEngine::NavigationEngine() {
 void NavigationEngine::run() {
     NavigationPath path;
     while (true) {
-        std::string tempString;
-        std::string tempString2;
         hwlib::cout << "Please input the x position\n";
-        tempString << hwlib::cin;
-        auto input1 = tempString.itoi();
+        auto input1 = hwlib::uart_getc() - '0';
         hwlib::cout << "Please input the y position\n";
-        tempString2 << hwlib::cin;
-        auto input2 = tempString2.itoi();
+        auto input2 = hwlib::uart_getc() - '0';
         path.addPathLocation({float(input1), float(input2)});
-        auto nextLocation = path.getNextLocation();
-        hwlib::cout << int(nextLocation.x) << ',' << int(nextLocation.y) << " added to the path." << hwlib::endl;
-        hwlib::cout << "Next point is 3 meters forward, 40 degrees rotation right" << hwlib::endl;
+        hwlib::cout << input1 << ',' << input2 << " added to the path." << hwlib::endl;
+        if (path.getPathLength() > 1) {
+            path.getNextLocation();
+            path.getNextLocation();
+            hwlib::cout << "Next point is 3 meters forward, 40 degrees rotation right" << hwlib::endl;
+        }
     }
     // while (true) {
     /*IDLE STATE*/

@@ -1,6 +1,6 @@
-#include "IO_Interface.hpp"
-#include "Navigation_Engine.hpp"
-#include "Vector2f.hpp"
+#include "io_interface.hpp"
+#include "navigation_engine.hpp"
+#include "vector2f.hpp"
 #include "wrap-hwlib.hpp"
 
 int main() {

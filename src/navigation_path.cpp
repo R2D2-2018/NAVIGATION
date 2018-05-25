@@ -17,3 +17,7 @@ Vector2f NavigationPath::getNextLocation() {
     }
     return nextLocation;
 }
+
+int NavigationPath::getPathLength() {
+    return index - head;
+}
