@@ -10,7 +10,6 @@
 
 class Vector2f {
   public:
-
     /**
      * @brief creates a Vector2f object
      *
