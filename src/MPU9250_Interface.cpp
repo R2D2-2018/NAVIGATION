@@ -5,117 +5,85 @@
  * @license   See LICENSE
  */
 
-#include "MPU9250_Interface.hpp"
+#include "mpu9250_interface.hpp"
 #include "memory_map.hpp"
 
-/**
- * @brief
- *
- */
 void MPU9250Interface::init() {
-    uint8_t data[12] = {0x3B};
+    /*for (;;) {
+        getAccel();
+        getGyro();
 
-    int16_t accel_temp[3] = {0, 0, 0}, gyro_temp[3] = {0, 0, 0};
+        hwlib::wait_ms(500);
+        hwlib::cout "ACCEL ";
+        printValuesX_Y_Z(accelValue);
+        hwlib::cout "GYRO ";
+        printValuesX_Y_Z(gyroValue);
+    }*/
 
-    i2c.write(MPU_addr, data, 1);
-    i2c.read(MPU_addr, data, 12);
-
-    accel_temp[0] = (((int16_t)data[0] << 8) | (int16_t)data[1]);
-    accel_temp[1] = (((int16_t)data[2] << 8) | (int16_t)data[3]);
-    accel_temp[2] = (((int16_t)data[4] << 8) | (int16_t)data[5]);
-    gyro_temp[0] = (((int16_t)data[6] << 8) | (int16_t)data[7]);
-    gyro_temp[1] = (((int16_t)data[8] << 8) | (int16_t)data[9]);
-    gyro_temp[2] = (((int16_t)data[10] << 8) | (int16_t)data[11]);
-
-    int32_t accel_bias[3] = {0, 0, 0};
-    int32_t gyro_bias[3] = {0, 0, 0};
-    accel_bias[0] += (int32_t)accel_temp[0];
-    accel_bias[1] += (int32_t)accel_temp[1];
-    accel_bias[2] += (int32_t)accel_temp[2];
-    gyro_bias[0] += (int32_t)gyro_temp[0];
-    gyro_bias[1] += (int32_t)gyro_temp[1];
-    gyro_bias[2] += (int32_t)gyro_temp[2];
-
-    print(accel_temp, gyro_temp);
+    // read data from magnetometer, not working yet
     for (;;) {
         hwlib::wait_ms(500);
         magnReadSlave();
     }
 }
 
-/**
- * @brief
- *
- */
-void MPU9250Interface::magnRead() {
-    uint8_t magn_addr = {0X0C};
-    uint8_t bypass_addr = {0x37};
-    uint8_t data[6] = {0x03};
-    int16_t magn_read[3] = {0, 0, 0};
-
-    uint8_t req[1] = {0x0A};
-    i2c.write(magn_addr, req, 0x01);
-
-    i2c.write(bypass_addr, data, 1); // enable bypass mode for magnetometer
-    i2c.write(magn_addr, data, 1);
-    i2c.read(magn_addr, data, 6);
-
-    magn_read[0] = -(((int16_t)data[3] << 8) | (int16_t)data[2]);
-    magn_read[1] = -(((int16_t)data[1] << 8) | (int16_t)data[0]);
-    magn_read[2] = -(((int16_t)data[5] << 8) | (int16_t)data[4]);
-
-    hwlib::cout << "magn_x " << magn_read[0] << " "
-                << "magn_y " << magn_read[1] << " "
-                << "magn_z " << magn_read[2] << "\n";
-}
-
-/**
- * @brief
- *
- */
 void MPU9250Interface::magnReadSlave() {
-    uint8_t AK8963_ST1[1] = {0x02};
+    // i2c.write(MPUAddr, data, 1);
+    // i2c.read(MPUAddr, data, 6);
+    uint8_t data[7] = {0x03}; ///< address where data starts
 
-    uint8_t data[7] = {0x03};
-    int16_t bit_data[3] = {0, 0, 0};
+    //...
 
-    bool newMagData = false;
-    i2c.read(AK8963_I2C_ADDR, AK8963_ST1, 1);
-    newMagData = (AK8963_ST1[0] & 0x01);
+    uint8_t magnReadFlag[1] = {0x0C | 0x80}, readData[1] = {0x87};
+    i2c.write(MPUREG_I2C_SLV0_ADDR, magnReadFlag, 1); // Set the I2C slave addres of AK8963 and set for read.
+    i2c.write(MPUREG_I2C_SLV0_REG, data, 1);          // I2C slave 0 register address from where to begin data transfe
+    i2c.write(MPUREG_I2C_SLV0_CTRL, readData, 1);     // Read 6 bytes from the magnetometer
 
-    if (newMagData == true) {
+    hwlib::wait_us(10000);
 
-        // i2c.write(MPU_addr, data, 1);
-        i2c.read(AK8963_I2C_ADDR, data, 7);
-
-        uint8_t c = data[6];
-        // hwlib::cout << " c: " << (int)c;
-        if (!(c & 0x08)) {
-            bit_data[0] = (((int16_t)data[1] << 8) | (int16_t)data[0]);
-            bit_data[1] = (((int16_t)data[3] << 8) | (int16_t)data[2]);
-            bit_data[2] = (((int16_t)data[5] << 8) | (int16_t)data[4]);
-
-            hwlib::cout << " data: " << bit_data[0] << " " << bit_data[1] << " " << bit_data[2] << " ";
-        }
+    uint8_t bypass[1] = {0x22};
+    i2c.write(INT_PIN_CFG, bypass, 1); // set bypass mode
+    i2c.read(MPUAddr, data, 7);
+    // must start your read from AK8963A register 0x03 and read seven bytes so that upon read of ST2 register 0x09 the AK8963A will
+    // unlatch the data registers for the next measurement
+    uint8_t c = data[6]; // end data read by reading ST2
+    if (!(c & 0x08)) {   // Check if magnetic sensor overflow set, if not then report data
+        magnValue[0] = ((int16_t)data[1] << 8) | data[0];
+        magnValue[1] = ((int16_t)data[3] << 8) | data[2];
+        magnValue[2] = ((int16_t)data[5] << 8) | data[4];
     }
+    printValuesX_Y_Z(magnValue);
 }
 
-int16_t MPU9250_Interface::getAccel() {
+void MPU9250Interface::getAccel() {
+    uint8_t data[6] = {0x3B};
+
+    i2c.write(MPUAddr, data, 1);
+    i2c.read(MPUAddr, data, 6);
+
+    accelValue[0] = (((int16_t)data[0] << 8) | (int16_t)data[1]);
+    accelValue[1] = (((int16_t)data[2] << 8) | (int16_t)data[3]);
+    accelValue[2] = (((int16_t)data[4] << 8) | (int16_t)data[5]);
 }
 
-int16_t MPU9250_Interface::getGyro() {
+void MPU9250Interface::getGyro() {
+    uint8_t data[12] = {0x3B};
+
+    i2c.write(MPUAddr, data, 1);
+    i2c.read(MPUAddr, data, 12);
+
+    gyroValue[0] = (((int16_t)data[6] << 8) | (int16_t)data[7]);
+    gyroValue[1] = (((int16_t)data[8] << 8) | (int16_t)data[9]);
+    gyroValue[2] = (((int16_t)data[10] << 8) | (int16_t)data[11]);
 }
 
-int16_t MPU9250_Interface::getMagn() {
+int16_t MPU9250Interface::getMagn() {
 }
 
-/**
- * @brief
- *
- * @param accel_temp
- * @param gyro_temp
- */
-void MPU9250Interface::print(int16_t accel_temp[3], int16_t gyro_temp[3]) {
-    hwlib::cout << "accel_x: " << accel_temp[0] << ' ' << "accel_y: " << accel_temp[1] << ' ' << "accel_x: " << accel_temp[2] << ' '
-                << "gyro_x: " << gyro_temp[0] << ' ' << "gyro_y: " << gyro_temp[1] << ' ' << "gyro_z: " << gyro_temp[2] << '\n';
+void MPU9250Interface::printValuesX_Y_Z(int16_t temp[3]) {
+    hwlib::cout << "X: " << temp[0] << " Y: " << temp[1] << " Z: " << temp[2] << hwlib::endl;
+}
+
+void MPU9250Interface::printValuesX_Y_Z(int32_t temp[3]) {
+    hwlib::cout << "X: " << temp[0] << " Y: " << temp[1] << " Z: " << temp[2] << hwlib::endl;
 }

@@ -1,7 +1,7 @@
-#include "IO_Interface.hpp"
-#include "MPU9250_Interface.hpp"
-#include "Navigation_Engine.hpp"
-#include "Vector2f.hpp"
+#include "io_interface.hpp"
+#include "mpu9250_interface.hpp"
+#include "navigation_engine.hpp"
+#include "vector2f.hpp"
 #include "wrap-hwlib.hpp"
 
 int main() {
@@ -13,10 +13,12 @@ int main() {
     hwlib::cout << int(point1.x) << ',' << int(point1.y) << hwlib::endl;
     hwlib::cout << "HWLIB does not support floats.." << hwlib::endl;
 
-    hwlib::target::pin_oc scl = hwlib::target::pin_oc(hwlib::target::pins::scl);
-    hwlib::target::pin_oc sda = hwlib::target::pin_oc(hwlib::target::pins::sda);
+    auto scl = due::pin_oc(due::pins::scl);
+    auto sda = due::pin_oc(due::pins::sda);
 
-    MPU9250Interface SENSOR(scl, sda);
+    const int8_t address = 0x68;
+
+    MPU9250Interface SENSOR(scl, sda, address);
     SENSOR.init();
 
     return 0;

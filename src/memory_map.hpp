@@ -14,6 +14,7 @@ enum addresses : uint8_t {
     MPUREG_USER_CTRL = 0x6A,
     MPUREG_I2C_MST_CTRL = 0x24,
     MPUREG_EXT_SENS_DATA_00 = 0x49,
+
     AK8963_I2C_ADDR = 0x0c,
     AK8963_CNTL1 = 0x0A,
     AK8963_CNTL2 = 0x0B,
@@ -22,6 +23,8 @@ enum addresses : uint8_t {
     MPUREG_I2C_SLV0_CTRL = 0x27,
     MPUREG_I2C_SLV0_DO = 0x63,
     MPUREG_I2C_SLV0_REG = 0x26,
+    MPUREG_EXT_SENS_DATA = 0x49,
+    INT_PIN_CFG = 0x37,
     READ_FLAG = 0x80
 
 };

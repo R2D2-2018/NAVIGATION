@@ -12,26 +12,71 @@
 
 class MPU9250Interface {
   public:
-    MPU9250Interface(hwlib::target::pin_oc &scl, hwlib::target::pin_oc &sda)
-        : scl(scl), sda(sda), MPU_addr(0x68), i2c(hwlib::i2c_bus_bit_banged_scl_sda(scl, sda)) {
+    MPU9250Interface(hwlib::pin_oc &scl, hwlib::pin_oc &sda, const int8_t MPUAddr)
+        : scl(scl), sda(sda), MPUAddr(MPUAddr), i2c(hwlib::i2c_bus_bit_banged_scl_sda(scl, sda)) {
     }
 
+    /**
+     * @brief Initializes MPU object
+     *
+     * Function to inizialize the i2c bus for the MPU
+     * and reading/printing values from the MPU
+     *
+     */
     void init();
 
-    int16_t getAccel();
-    int16_t getGyro();
+    /**
+     * @brief Get the Accelerator values
+     *
+     * Returns values as array {x,y,z}
+     *
+     * @return int16_t Gyroscope values
+     */
+    void getAccel();
+    /**
+     * @brief Get the Gyroscope values
+     *
+     * Returns values as array {x,y,z}
+     *
+     * @return int16_t Gyroscope values
+     */
+    void getGyro();
+    /**
+     * @brief Get the Magnetometer values
+     *
+     * Returns values as array {x,y,z}
+     *
+     * @return int16_t Magnetometer values
+     */
     int16_t getMagn();
 
-    void magnRead();
+    /**
+     * @brief
+     *
+     */
     void magnReadSlave();
-
-    void printValuesX_Y_Z(int16_t accel_temp[3]);
+    /**
+     * @brief Prints values of the given int16_t array in the format "X:% Y:% Z:%"
+     *
+     * @param temp int16_t array with 3 values
+     */
+    void printValuesX_Y_Z(int16_t temp[3]);
+    /**
+     * @brief Prints values of the given int32_t array in the format "X:% Y:% Z:%"
+     *
+     * @param temp int32_t array with 3 values
+     */
+    void printValuesX_Y_Z(int32_t temp[3]);
 
   private:
-    hwlib::target::pin_oc &scl;
-    hwlib::target::pin_oc &sda;
-    const int8_t MPU_addr;
+    hwlib::pin_oc &scl;
+    hwlib::pin_oc &sda;
+    const int8_t MPUAddr;
     hwlib::i2c_bus_bit_banged_scl_sda i2c;
+
+    int16_t accelValue[3] = {0, 0, 0};
+    int16_t gyroValue[3] = {0, 0, 0};
+    int16_t magnValue[3] = {0, 0, 0};
 };
 
 #endif

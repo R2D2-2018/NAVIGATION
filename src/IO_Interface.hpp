@@ -8,7 +8,7 @@
 #ifndef IO_INTERFACE_HPP
 #define IO_INTERFACE_HPP
 
-#include "Command.hpp"
+#include "command.hpp"
 
 class IOInterfaceListener;
 
