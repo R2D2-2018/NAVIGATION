@@ -8,23 +8,17 @@
 #ifndef POSITION_MODULE_HPP
 #define POSITION_MODULE_HPP
 
-#include "mpu9250_interface.hpp"
+//#include "MPU9250_Interface.hpp"
 #include "vector2f.hpp"
 
 class PositionModule {
   public:
-    /**
-     * @brief creates a PositionModule object
-     *
-     * Constructor for a PositionModule object without arguments.
-     *
-     * @return a PositionModule object
-     */
     PositionModule() {
     }
 
   private:
-    MPU9250Interface MPU;
+    // MPU9250Interface MPU( hwlib::target::pin_oc & scl, hwlib::target::pin_oc & sda);
+    // commented because class is in progress
 };
 
 #endif
