@@ -1,8 +1,6 @@
 #ifndef MEMORY_MAP_HPP
 #define MEMORY_MAP_HPP
 
-//#include <iostream>
-
 /**
  * @file        memory_map.hpp
  * @brief       This header will contain memory addresses

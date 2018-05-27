@@ -48,13 +48,8 @@ class MPU9250Interface {
      *
      * @return int16_t Magnetometer values
      */
-    int16_t getMagn();
+    void getMagn();
 
-    /**
-     * @brief
-     *
-     */
-    void magnReadSlave();
     /**
      * @brief Prints values of the given int16_t array in the format "X:% Y:% Z:%"
      *
