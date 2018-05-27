@@ -11,12 +11,8 @@ include_directories (${catch}/single_include)
 # Source Files:
 
 set (sources
-<<<<<<< HEAD
     src/wrap-hwlib.cpp
     src/libc-stub.cpp
     src/main.cpp
     src/MPU9250_Interface.cpp
-=======
-
->>>>>>> origin/development
 )
