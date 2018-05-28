@@ -11,6 +11,7 @@ add_definitions (-DBMPTK_TARGET_test
 set (sources ${sources}
     ${unit_test_main}
     src/libc-stub.cpp
+    src/navigation_path.cpp
 )
 
 set (build_test build_test)
@@ -18,6 +19,10 @@ set (unit_test unit_test)
 set (memcheck memcheck)
 set (complexity_test complexity_test)
 set (clangformat_test clangformat_test)
+
+add_definitions (-DBMPTK_TARGET_test
+                 -DBMPTK_TARGET=test
+                 -DBMPTK_BAUDRATE=19200)
 
 if (NOT DEFINED cyclomatic_complexity_warning)
 SET(cyclomatic_complexity_warning 10)

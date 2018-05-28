@@ -20,8 +20,16 @@ class NavigationEngine : public IOInterfaceListener {
      *
      * @return a NavigationEngine object
      */
-    NavigationEngine() {
-    }
+    NavigationEngine();
+
+    /**
+     * @brief Main loop for this thread
+     *
+     * This function is called when the program starts and can only be ended by shutting down the program.
+     *
+     * @return void
+     */
+    void run();
 
   private:
     /**
@@ -33,8 +41,7 @@ class NavigationEngine : public IOInterfaceListener {
      * @param[in]    command    a const Command reference
      * @return void
      */
-    void onReceive(const Command &command) {
-    }
+    void onReceive(const Command &command);
     PositionModule positionModule;
 };
 

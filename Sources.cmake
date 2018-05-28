@@ -11,6 +11,8 @@ include_directories (${catch}/single_include)
 # Source Files:
 
 set (sources
+    src/navigation_engine.cpp
+    src/navigation_path.cpp
     src/wrap-hwlib.cpp
     src/libc-stub.cpp
     src/main.cpp
