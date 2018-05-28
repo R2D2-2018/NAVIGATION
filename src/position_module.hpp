@@ -24,7 +24,8 @@ class PositionModule {
     }
 
   private:
-    MPU9250Interface MPU;
+    // MPU9250Interface MPU( hwlib::target::pin_oc & scl, hwlib::target::pin_oc & sda);
+    // commented because class is in progress
 };
 
 #endif
