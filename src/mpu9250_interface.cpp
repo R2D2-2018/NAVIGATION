@@ -40,6 +40,7 @@ void MPU9250Interface::getAccel() {
     accelValue[2] = (((int16_t)data[4] << 8) | (int16_t)data[5]);
 
     printValuesX_Y_Z(accelValue);
+    // printAccel(accelValue);
 }
 
 void MPU9250Interface::getGyro() {
@@ -80,3 +81,6 @@ void MPU9250Interface::printValuesX_Y_Z(int16_t temp[3]) {
 void MPU9250Interface::printValuesX_Y_Z(int32_t temp[3]) {
     hwlib::cout << "X: " << temp[0] << " Y: " << temp[1] << " Z: " << temp[2] << hwlib::endl;
 }
+
+// void printAccel(int16_t temp[3]) {
+//}
