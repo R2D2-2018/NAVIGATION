@@ -3,7 +3,7 @@
 
 /**
  * @file        memory_map.hpp
- * @brief       This header will contain memory addresses
+ * @brief       This header will contain memory addresses for the MPU9250
  * @author      Renske Kuip
  * @license     MIT
  */
@@ -11,7 +11,6 @@
 enum addresses : uint8_t {
     MPUREG_USER_CTRL = 0x6A,
     MPUREG_I2C_MST_CTRL = 0x24,
-    MPUREG_EXT_SENS_DATA_00 = 0x49,
 
     AK8963_I2C_ADDR = 0x0c,
     AK8963_CNTL1 = 0x0A,

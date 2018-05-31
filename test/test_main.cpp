@@ -2,10 +2,6 @@
 #include "../src/navigation_path.hpp"
 #include "catch.hpp"
 
-TEST_CASE("Example Test Case") {
-    REQUIRE(10 == 10);
-}
-
 TEST_CASE("Navigation Path in/out test", "[navigation_path]") {
     // Preconditions:
     NavigationPath path;
