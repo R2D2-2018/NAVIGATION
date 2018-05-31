@@ -1,7 +1,6 @@
 #include "navigation_engine.hpp"
 #include "navigation_path.hpp"
 #include "wrap-hwlib.hpp"
-#include <string>
 
 NavigationEngine::NavigationEngine() {
 }

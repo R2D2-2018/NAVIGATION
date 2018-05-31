@@ -8,7 +8,7 @@ int main() {
     WDT->WDT_MR = WDT_MR_WDDIS;
     auto scl = due::pin_oc(due::pins::scl);
     auto sda = due::pin_oc(due::pins::sda);
-    const int8_t address = 0x68;
+    const uint8_t address = 0x68;
 
     NavigationEngine engine;
     IOInterface interface(engine);

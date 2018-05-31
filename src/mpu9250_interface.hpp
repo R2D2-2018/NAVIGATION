@@ -28,25 +28,16 @@ class MPU9250Interface {
     /**
      * @brief Get the Accelerator values
      *
-     * Returns values as array {x,y,z}
-     *
-     * @return int16_t Gyroscope values
      */
     void getAccel();
     /**
      * @brief Get the Gyroscope values
      *
-     * Returns values as array {x,y,z}
-     *
-     * @return int16_t Gyroscope values
      */
     void getGyro();
     /**
      * @brief Get the Magnetometer values
      *
-     * Returns values as array {x,y,z}
-     *
-     * @return int16_t Magnetometer values
      */
     void getMagn();
 
@@ -62,6 +53,12 @@ class MPU9250Interface {
      * @param temp int32_t array with 3 values
      */
     void printValuesX_Y_Z(int32_t temp[3]);
+
+    /**
+     * @brief Function to print the MPU9250 data for debug purposes
+     *
+     */
+    void debug();
 
   private:
     hwlib::pin_oc &scl;
