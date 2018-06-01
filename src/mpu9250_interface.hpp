@@ -60,6 +60,8 @@ class MPU9250Interface {
      */
     void debug();
 
+    void calibrateMagnetometer();
+
   private:
     hwlib::pin_oc &scl;
     hwlib::pin_oc &sda;
@@ -69,6 +71,7 @@ class MPU9250Interface {
     int16_t accelValue[3] = {0, 0, 0};
     int16_t gyroValue[3] = {0, 0, 0};
     int16_t magnValue[3] = {0, 0, 0};
+    int16_t magnetBias[3] = {0, 0, 0};
 };
 
 #endif
