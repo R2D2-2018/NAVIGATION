@@ -32,6 +32,9 @@ void MPU9250Interface::getAccel() {
     accelValue[0] = (((int16_t)data[0] << 8) | (int16_t)data[1]);
     accelValue[1] = (((int16_t)data[2] << 8) | (int16_t)data[3]);
     accelValue[2] = (((int16_t)data[4] << 8) | (int16_t)data[5]);
+    accelValue[0] -= accelBias[0];
+    accelValue[1] -= accelBias[1];
+    accelValue[2] -= accelBias[2];
 }
 
 void MPU9250Interface::getGyro() {
@@ -44,6 +47,9 @@ void MPU9250Interface::getGyro() {
     gyroValue[0] = (((int16_t)data[6] << 8) | (int16_t)data[7]); // Convert uint8_t data (high and low) into int16_t
     gyroValue[1] = (((int16_t)data[8] << 8) | (int16_t)data[9]);
     gyroValue[2] = (((int16_t)data[10] << 8) | (int16_t)data[11]);
+    gyroValue[0] -= gyroBias[0];
+    gyroValue[1] -= gyroBias[1];
+    gyroValue[2] -= gyroBias[2];
 }
 
 void MPU9250Interface::getMagn() {
