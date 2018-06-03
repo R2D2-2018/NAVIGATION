@@ -14,7 +14,11 @@ int main() {
     IOInterface interface(engine);
     MPU9250Interface sensor(scl, sda, address);
     sensor.init();
-    hwlib::wait_ms(1000);
-    engine.run();
+    hwlib::wait_ms(10000);
+    hwlib::cout << "starting calibration" << hwlib::endl;
+    sensor.calibrateAccelerometer();
+    sensor.calibrateGyroscope();
+    sensor.calibrateMagnetometer();
+    // engine.run();
     return 0;
 }
