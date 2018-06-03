@@ -28,25 +28,19 @@ class MPU9250Interface {
     /**
      * @brief Get the Accelerator values
      *
-     * Returns values as array {x,y,z}
-     *
-     * @return int16_t Gyroscope values
+     * Sets accelValue on current values as {x,y,z}
      */
     void getAccel();
     /**
      * @brief Get the Gyroscope values
      *
-     * Returns values as array {x,y,z}
-     *
-     * @return int16_t Gyroscope values
+     * Sets gyrolValue on current values as {x,y,z}
      */
     void getGyro();
     /**
      * @brief Get the Magnetometer values
      *
-     * Returns values as array {x,y,z}
-     *
-     * @return int16_t Magnetometer values
+     * Sets magnValue on current values as {x,y,z}
      */
     void getMagn();
 
@@ -55,32 +49,28 @@ class MPU9250Interface {
      *
      * @param temp array of raw data (x,y,z)
      */
-    int16_t *accelRawToMs(int16_t temp[3]);
+    int16_t *accelConvert(int16_t temp[3]);
     /**
      * @brief Converts raw gyroscope data to degrees/s of rotation speed
      *
      * @param temp array of raw data (x,y,z)
      */
-    int16_t *gyroRawToDs(int16_t temp[3]);
+    int16_t *gyroConvert(int16_t temp[3]);
     /**
      * @brief Converts raw magnetometer data to direction change in degrees
      *
      * @param temp array of raw data (x,y,z)
      */
-    void magnRawToDegrees(int16_t temp[3]);
+    int16_t magnConvert(int16_t temp[3]);
 
     /**
      * @brief Prints values of the given int16_t array in the format "X:% Y:% Z:%"
      *
      * @param temp int16_t array with int16_t temp[3]3 values
      */
-    void printValuesX_Y_Z(int16_t temp[3]);
-    /**
-     * @brief Prints values of the given int32_t array in the format "X:% Y:% Z:%"
-     *
-     * @param temp int32_t array with 3 values
-     */
-    void printValuesX_Y_Z(int32_t temp[3]);
+    void printValuesXYZ(int16_t temp[3]);
+
+    void print(int16_t *temp);
 
   private:
     hwlib::pin_oc &scl;
@@ -90,7 +80,7 @@ class MPU9250Interface {
 
     int16_t *accelValue[3] = {0, 0, 0};
     int16_t *gyroValue[3] = {0, 0, 0};
-    int16_t magnValue[3] = {0, 0, 0};
+    int16_t magnValue = 0;
 
     int accelGravitySettings = 2; ///< accelerator data is in 2G limit
     int16_t accelScaling = 16384; ///< default for 2G
