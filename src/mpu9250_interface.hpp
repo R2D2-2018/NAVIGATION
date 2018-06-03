@@ -60,7 +60,26 @@ class MPU9250Interface {
      */
     void debug();
 
+    /**
+     * @brief Calibrates the magnetometer
+     *
+     * Calibrates the magnetometer by averaging the values over the course of 15 seconds. Sensor needs to be moved in a figure eight
+     * motion to work properly.
+     *
+     */
     void calibrateMagnetometer();
+
+    /**
+     * @brief Calibrates the accelerometer
+     *
+     */
+    void calibrateAccelerometer();
+
+    /**
+     * @brief Calibrates the gyroscope
+     *
+     */
+    void calibrateGyroscope();
 
   private:
     hwlib::pin_oc &scl;
@@ -72,6 +91,8 @@ class MPU9250Interface {
     int16_t gyroValue[3] = {0, 0, 0};
     int16_t magnValue[3] = {0, 0, 0};
     int16_t magnetBias[3] = {0, 0, 0};
+    int32_t accelBias[3] = {0, 0, 0};
+    int32_t gyroBias[3] = {0, 0, 0};
 };
 
 #endif

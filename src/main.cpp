@@ -16,6 +16,8 @@ int main() {
     sensor.init();
     hwlib::wait_ms(10000);
     hwlib::cout << "starting calibration" << hwlib::endl;
+    sensor.calibrateAccelerometer();
+    sensor.calibrateGyroscope();
     sensor.calibrateMagnetometer();
     // engine.run();
     return 0;

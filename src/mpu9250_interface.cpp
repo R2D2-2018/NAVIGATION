@@ -32,8 +32,6 @@ void MPU9250Interface::getAccel() {
     accelValue[0] = (((int16_t)data[0] << 8) | (int16_t)data[1]);
     accelValue[1] = (((int16_t)data[2] << 8) | (int16_t)data[3]);
     accelValue[2] = (((int16_t)data[4] << 8) | (int16_t)data[5]);
-
-    printValuesX_Y_Z(accelValue);
 }
 
 void MPU9250Interface::getGyro() {
@@ -46,8 +44,6 @@ void MPU9250Interface::getGyro() {
     gyroValue[0] = (((int16_t)data[6] << 8) | (int16_t)data[7]); // Convert uint8_t data (high and low) into int16_t
     gyroValue[1] = (((int16_t)data[8] << 8) | (int16_t)data[9]);
     gyroValue[2] = (((int16_t)data[10] << 8) | (int16_t)data[11]);
-
-    printValuesX_Y_Z(gyroValue);
 }
 
 void MPU9250Interface::getMagn() {
@@ -68,6 +64,60 @@ void MPU9250Interface::getMagn() {
         }
     }
     // printValuesX_Y_Z(magnValue);
+}
+
+void MPU9250Interface::calibrateAccelerometer() {
+    uint16_t accelSensitivity = 16384; // = 16384 LSB/g
+    int sampleCount = 100;
+    for (int i = 0; i < sampleCount; i++) {
+        int16_t accelTemp[3] = {0, 0, 0};
+        getAccel();
+        accelTemp[0] = accelValue[0];
+        accelTemp[1] = accelValue[1];
+        accelTemp[2] = accelValue[2];
+
+        accelBias[0] += (int32_t)accelTemp[0];
+        accelBias[1] += (int32_t)accelTemp[1];
+        accelBias[2] += (int32_t)accelTemp[2];
+    }
+    accelBias[0] /= (int32_t)sampleCount;
+    accelBias[1] /= (int32_t)sampleCount;
+    accelBias[2] /= (int32_t)sampleCount;
+
+    if (accelBias[2] > 0L) {
+        accelBias[2] -= (int32_t)accelSensitivity;
+    } // Remove gravity from the z-axis accelerometer bias calculation
+    else {
+        accelBias[2] += (int32_t)accelSensitivity;
+    }
+
+    // accelBias[0] = accelBias[0] / accelSensitivity;
+    // accelBias[1] = accelBias[1] / accelSensitivity;
+    // accelBias[2] = accelBias[2] / accelSensitivity;
+    printValuesX_Y_Z(accelBias);
+}
+
+void MPU9250Interface::calibrateGyroscope() {
+    uint16_t gyroSensitivity = 131; // = 131 LSB/degrees/sec
+    int sampleCount = 100;
+    for (int i = 0; i < sampleCount; i++) {
+        int16_t gyroTemp[3] = {0, 0, 0};
+        getGyro();
+        gyroTemp[0] = gyroValue[0];
+        gyroTemp[1] = gyroValue[1];
+        gyroTemp[2] = gyroValue[2];
+        gyroBias[0] += (int32_t)gyroTemp[0];
+        gyroBias[1] += (int32_t)gyroTemp[1];
+        gyroBias[2] += (int32_t)gyroTemp[2];
+    }
+    gyroBias[0] /= (int32_t)sampleCount;
+    gyroBias[1] /= (int32_t)sampleCount;
+    gyroBias[2] /= (int32_t)sampleCount;
+
+    // gyroBias[0] = (float)gyroBias[0] / (float)gyroSensitivity;
+    // gyroBias[1] = (float)gyroBias[1] / (float)gyroSensitivity;
+    // gyroBias[2] = (float)gyroBias[2] / (float)gyroSensitivity;
+    printValuesX_Y_Z(gyroBias);
 }
 
 void MPU9250Interface::calibrateMagnetometer() {
@@ -107,7 +157,10 @@ void MPU9250Interface::printValuesX_Y_Z(int32_t temp[3]) {
 void MPU9250Interface::debug() {
     for (;;) {
         getAccel();
+        printValuesX_Y_Z(accelValue);
         getGyro();
+        printValuesX_Y_Z(gyroValue);
         getMagn();
+        printValuesX_Y_Z(magnValue);
     }
 }
