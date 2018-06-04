@@ -19,7 +19,7 @@ class IOInterfaceListener {
      * @param[in]    command    a const Command reference
      * @return void
      */
-    virtual void onReceive(const Command &command);
+    virtual void onReceive(const Command &command) = 0;
 };
 
 #endif

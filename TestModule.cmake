@@ -10,6 +10,7 @@ add_definitions (-DBMPTK_TARGET_test
 
 set (sources ${sources}
     ${unit_test_main}
+    src/wrap-hwlib.cpp
     src/libc-stub.cpp
 )
 

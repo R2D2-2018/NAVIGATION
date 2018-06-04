@@ -13,6 +13,16 @@ class Vector2f {
     /**
      * @brief creates a Vector2f object
      *
+     * Constructor for a Vector2f object with no arguments.
+     *
+     * @return a Vector2f object
+     */
+    Vector2f() {
+    }
+
+    /**
+     * @brief creates a Vector2f object
+     *
      * Constructor for a Vector2f object with two arguments.
      *
      * @param[in]    x    A float representing the x position
