@@ -13,11 +13,14 @@ void MPU9250Interface::init() {
     hwlib::cout << hwlib::right << "Initializing MPU9250..." << hwlib::endl;
     for (;;) {
         hwlib::cout << "ACCELERATOR\n";
-        // getAccel();
+        getAccel();
+
+        hwlib::cout << "GYROSCOPE\n";
+        getGyro();
+
+        hwlib::cout << "MAGNETOMETER\n";
         getMagn();
-        // hwlib::cout << "GYROSCOPE\n";
-        // getGyro();
-        hwlib::wait_ms(500);
+        hwlib::wait_ms(700);
     }
 
     uint8_t data[7] = {0x03}; ///< I2C slave 0 register address for AK8963  data
@@ -45,7 +48,7 @@ void MPU9250Interface::getAccel() {
     rawData[1] = (((int16_t)data[2] << 8) | (int16_t)data[3]);
     rawData[2] = (((int16_t)data[4] << 8) | (int16_t)data[5]);
 
-    printValuesXYZ(rawData);
+    // printValuesXYZ(rawData);
 
     *accelValue = accelConvert(rawData);
     print(*accelValue);
@@ -62,7 +65,7 @@ void MPU9250Interface::getGyro() {
     rawData[1] = (((int16_t)data[8] << 8) | (int16_t)data[9]);
     rawData[2] = (((int16_t)data[10] << 8) | (int16_t)data[11]);
 
-    printValuesXYZ(rawData);
+    // printValuesXYZ(rawData);
 
     *gyroValue = gyroConvert(rawData);
     print(*gyroValue);
@@ -84,7 +87,7 @@ void MPU9250Interface::getMagn() {
             rawData[2] = (((int16_t)data[5] << 8) | (int16_t)data[4]);
         }
     }
-    printValuesXYZ(rawData);
+    // printValuesXYZ(rawData);
 
     magnValue = magnConvert(rawData);
     hwlib::cout << "Heading:" << magnValue << hwlib::endl;
@@ -114,8 +117,8 @@ If D is between 67.5 degrees and 112.5 degrees – East
 If D is between 0 degrees and 67.5 degrees – North-East*/
 int16_t MPU9250Interface::magnConvert(int16_t temp[3]) {
     int16_t x = temp[0], y = temp[1];
-    int16_t heading;
-    const double PI = 3.141592653589793;
+    int16_t heading = 0;
+    /*const double PI = 3.141592653589793;
 
     if (x == 0 && y < 0) {
         heading = 90;
@@ -128,8 +131,8 @@ int16_t MPU9250Interface::magnConvert(int16_t temp[3]) {
         } else if (heading < 0) {
             heading += 360;
         }
-    }
-    hwlib::cout << "HEADING IN: " << heading << hwlib::endl;
+    }*/
+    // hwlib::cout << "HEADING IN: " << heading << hwlib::endl;
     return heading;
 }
 
