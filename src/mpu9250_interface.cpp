@@ -116,7 +116,7 @@ If D is between 112.5 degrees and 157.5 degrees – South-East
 If D is between 67.5 degrees and 112.5 degrees – East
 If D is between 0 degrees and 67.5 degrees – North-East*/
 int16_t MPU9250Interface::magnConvert(int16_t temp[3]) {
-    int16_t x = temp[0], y = temp[1];
+    // int16_t x = temp[0], y = temp[1];
     int16_t heading = 0;
     /*const double PI = 3.141592653589793;
 
