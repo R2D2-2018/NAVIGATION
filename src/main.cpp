@@ -6,15 +6,28 @@
 
 int main() {
     WDT->WDT_MR = WDT_MR_WDDIS;
-    auto scl = due::pin_oc(due::pins::scl);
-    auto sda = due::pin_oc(due::pins::sda);
+    auto scl = hwlib::target::pin_oc(hwlib::target::pins::scl);
+    auto sda = hwlib::target::pin_oc(hwlib::target::pins::sda);
     const int8_t address = 0x68;
 
     NavigationEngine engine;
     IOInterface interface(engine);
     MPU9250Interface sensor(scl, sda, address);
-    sensor.init();
-    hwlib::wait_ms(1000);
-    engine.run();
+
+    for (;;) {
+        hwlib::cout << "Accelerator: \r\n";
+        hwlib::cout << sensor.getAccelerationValues().getX() << "|" << sensor.getAccelerationValues().getY() << "|"
+                    << sensor.getAccelerationValues().getZ() << "\r\n";
+        hwlib::cout << "Gyroscope: \r\n";
+        hwlib::cout << sensor.getGyroscopeValues().getX() << "|" << sensor.getGyroscopeValues().getY() << "|"
+                    << sensor.getGyroscopeValues().getZ() << "\r\n";
+        hwlib::cout << "Magnetic: \r\n";
+        hwlib::cout << sensor.getMagneticValues().getX() << "|" << sensor.getMagneticValues().getY() << "|"
+                    << sensor.getMagneticValues().getZ() << "\r\n";
+
+        hwlib::cout << "\r\n";
+        hwlib::wait_ms(1000);
+    }
+    // engine.run();
     return 0;
 }
