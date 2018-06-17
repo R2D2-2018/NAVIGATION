@@ -21,9 +21,9 @@ int main() {
         hwlib::cout << "Gyroscope: \r\n";
         hwlib::cout << sensor.getGyroscopeValues().getX() << "|" << sensor.getGyroscopeValues().getY() << "|"
                     << sensor.getGyroscopeValues().getZ() << "\r\n";
-        hwlib::cout << "Magnetic: \r\n";
-        hwlib::cout << sensor.getMagneticValues().getX() << "|" << sensor.getMagneticValues().getY() << "|"
-                    << sensor.getMagneticValues().getZ() << "\r\n";
+        hwlib::cout << "Magnetometer: \r\n";
+        hwlib::cout << sensor.getMagnetometerValues().getX() << "|" << sensor.getMagnetometerValues().getY() << "|"
+                    << sensor.getMagnetometerValues().getZ() << "\r\n";
 
         hwlib::cout << "\r\n";
         hwlib::wait_ms(1000);

@@ -1,9 +1,12 @@
 /**
  * @file
  * @brief     MPU9250Interface Class
- * @author    Quinten Perquin
+ * @author    Quinten Perquin and Jeroen van Hattem
  * @license   See LICENSE
  */
+
+// REGISTER MAP: https://cdn.sparkfun.com/assets/learn_tutorials/5/5/0/MPU-9250-Register-Map.pdf
+// COMPASS: https://devzone.nordicsemi.com/f/nordic-q-a/28414/read-mpu-9250-magnetometer/112145#112145
 
 #ifndef MPU9250_INTERFACE_HPP
 #define MPU9250_INTERFACE_HPP
@@ -20,11 +23,11 @@ class MPU9250Interface {
 
     Coordinate3D accelerationCalibrateValues;
     Coordinate3D gyroscopeCalibrateValues;
-    Coordinate3D magneticCalibrateValues;
+    Coordinate3D magnetometerCalibrateValues;
 
     Coordinate3D accelerationValues;
     Coordinate3D gyroscopeValues;
-    Coordinate3D magneticValues;
+    Coordinate3D magnetometerValues;
 
   public:
     MPU9250Interface(hwlib::pin_oc &scl, hwlib::pin_oc &sda, const int8_t MPUAddr);
@@ -32,10 +35,37 @@ class MPU9250Interface {
     /**
      * @brief Calibrate the sensor
      *
-     * Calibrate the sensor by saving the initial values.
+     * Calibrate the sensor by saving the initial values. So it sets a zero.
      *
      */
     void calibrate();
+
+    /**
+     * @brief Get the calibrated Coordinate3D value for the acceleration
+     *
+     * Returns values as Coordinate3D {x,y,z}
+     *
+     * @return Coordinate3D acceleration calibrated values
+     */
+    Coordinate3D getAccelerationCalibrateValues();
+
+    /**
+     * @brief Get the calibrated Coordinate3D value for the gyroscope
+     *
+     * Returns values as Coordinate3D {x,y,z}
+     *
+     * @return Coordinate3D gyroscope calibrated values
+     */
+    Coordinate3D getGyroscopeCalibrateValues();
+
+    /**
+     * @brief Get the calibrated Coordinate3D for the Magnetometer sensor
+     *
+     * Returns values as Coordinate3D {x,y,z}
+     *
+     * @return Coordinate3D Magnetometer calibrated values
+     */
+    Coordinate3D getMagnetometerCalibrateValues();
 
     /**
      * @brief Get the Accelerator values
@@ -62,7 +92,7 @@ class MPU9250Interface {
      *
      * @return Coordinate3D Gyroscope values
      */
-    Coordinate3D saveAccelerationValues();
+    void saveAccelerationValues();
 
     /**
      * @brief Get the Gyroscope values
@@ -71,7 +101,7 @@ class MPU9250Interface {
      *
      * @return Coordinate3D Gyroscope values
      */
-    Coordinate3D saveGyroscopeValues();
+    void saveGyroscopeValues();
 
     /**
      * @brief Get the Magnetometer values
@@ -80,7 +110,7 @@ class MPU9250Interface {
      *
      * @return Coordinate3D Magnetometer values
      */
-    Coordinate3D getMagneticValues();
+    Coordinate3D getMagnetometerValues();
 
     /**
      * @brief Prints values of the given Coordinate3D object in the format "X:% Y:% Z:%"

@@ -1,9 +1,15 @@
+/**
+ * @file
+ * @brief     Coordinate3D Class
+ * @author    Jeroen van Hattem
+ * @license   See LICENSE
+ */
 #ifndef COORDINATE3D_HPP
 #define COORDINATE3D_HPP
 
 #include "wrap-hwlib.hpp"
 
-class Coordinate3D {
+struct Coordinate3D {
   private:
     int16_t x;
     int16_t y;

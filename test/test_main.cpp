@@ -6,6 +6,44 @@ TEST_CASE("Example Test Case") {
     REQUIRE(10 == 10);
 }
 
+TEST_CASE("Coordinates 3D get coordinates positive") {
+    Coordinate3D coordinates(140, 150, 130);
+
+    REQUIRE(coordinates.getX() == 140);
+    REQUIRE(coordinates.getY() == 150);
+    REQUIRE(coordinates.getZ() == 130);
+}
+
+TEST_CASE("Coordinates 3D get coordinates negative") {
+    Coordinate3D coordinates(-140, -150, -130);
+
+    REQUIRE(coordinates.getX() == -140);
+    REQUIRE(coordinates.getY() == -150);
+    REQUIRE(coordinates.getZ() == -130);
+}
+
+TEST_CASE("Coordinates 3D set coordinates positive") {
+    Coordinate3D coordinates;
+    coordinates.setX(140);
+    coordinates.setY(150);
+    coordinates.setZ(130);
+
+    REQUIRE(coordinates.getX() == 140);
+    REQUIRE(coordinates.getY() == 150);
+    REQUIRE(coordinates.getZ() == 130);
+}
+
+TEST_CASE("Coordinates 3D set coordinates negative") {
+    Coordinate3D coordinates;
+    coordinates.setX(-140);
+    coordinates.setY(-150);
+    coordinates.setZ(-130);
+
+    REQUIRE(coordinates.getX() == -140);
+    REQUIRE(coordinates.getY() == -150);
+    REQUIRE(coordinates.getZ() == -130);
+}
+
 TEST_CASE("Navigation Path in/out test", "[navigation_path]") {
     // Preconditions:
     NavigationPath path;
