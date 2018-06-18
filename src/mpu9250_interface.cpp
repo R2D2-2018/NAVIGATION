@@ -14,7 +14,8 @@ MPU9250Interface::MPU9250Interface(hwlib::pin_oc &scl, hwlib::pin_oc &sda, const
     hwlib::cout << hwlib::right << "Initializing MPU9250..." << hwlib::endl;
 
     uint8_t data[7] = {0x03}; ///< I2C slave 0 register address for AK8963  data
-    uint8_t magnReadFlag[1] = {0x0C | 0x80}, readData[1] = {0x87}, continious[1] = {0x06};
+    uint8_t magnReadFlag[1] = {0x0C | 0x80}, readData[1] = {0x87}, continious[1] = {0x06}, bypass[1] = {0x22};
+    /// All the I2C data addresses are pointers, because HWLIB only accepts them as such
 
     i2c.write(AK8963_CNTL1, continious, 1);           // start continious mode AK8963
     i2c.write(MPUREG_I2C_SLV0_ADDR, magnReadFlag, 1); // Set the I2C slave addres of AK8963 and set for read.
@@ -29,7 +30,6 @@ MPU9250Interface::MPU9250Interface(hwlib::pin_oc &scl, hwlib::pin_oc &sda, const
 
     hwlib::wait_us(10000);
 
-    uint8_t bypass[1] = {0x22};
     i2c.write(INT_PIN_CFG, bypass, 1); // set bypass mode
 }
 
@@ -94,8 +94,8 @@ void MPU9250Interface::saveAccelerationValues() {
 void MPU9250Interface::saveGyroscopeValues() {
     uint8_t data[12] = {0x3B}; ///< address where MPU data starts
 
-    i2c.write(MPUAddr, data, 1);
-    i2c.read(MPUAddr, data, 12);
+    i2c.write(MPUAddr, data, 1); // Write 1 byte to MPU
+    i2c.read(MPUAddr, data, 12); // Read 12
 
     gyroscopeValues.setX((((int16_t)data[6] << 8) | (int16_t)data[7]));
     gyroscopeValues.setY((((int16_t)data[8] << 8) | (int16_t)data[9]));

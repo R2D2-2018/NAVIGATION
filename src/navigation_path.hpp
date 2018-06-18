@@ -9,12 +9,11 @@
 #define NAVIGATION_PATH_HPP
 
 #include "vector2f.hpp"
-#include <vector>
 
 class NavigationPath {
   public:
     /**
-     * @brief creates a NavigationPath object.
+     * @brief Creates a NavigationPath object.
      *
      * Constructor for a NavigationPath object without arguments.
      *
@@ -23,7 +22,7 @@ class NavigationPath {
     NavigationPath();
 
     /**
-     * @brief adds a Vector2f to the path.
+     * @brief Adds a Vector2f to the path.
      *
      * adds a Vector2f to the back of the current path.
      *
@@ -33,7 +32,7 @@ class NavigationPath {
     void addPathLocation(Vector2f location);
 
     /**
-     * @brief gets the next location from the path.
+     * @brief Gets the next location from the path.
      *
      * gets the Vector2f at the front of the current path.
      *
@@ -42,7 +41,7 @@ class NavigationPath {
     Vector2f getNextLocation();
 
     /**
-     * @brief gets the length of the path.
+     * @brief Gets the length of the path.
      *
      * gets the current length of the path.
      *

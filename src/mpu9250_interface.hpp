@@ -111,7 +111,6 @@ class MPU9250Interface {
      * @return Coordinate3D Magnetometer values
      */
     Coordinate3D getMagnetometerValues();
-
     /**
      * @brief Prints values of the given Coordinate3D object in the format "X:% Y:% Z:%"
      *
