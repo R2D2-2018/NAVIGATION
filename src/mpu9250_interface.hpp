@@ -21,13 +21,13 @@ class MPU9250Interface {
     const int8_t MPUAddr;
     hwlib::i2c_bus_bit_banged_scl_sda i2c;
 
-    Coordinate3D accelerationCalibrateValues;
-    Coordinate3D gyroscopeCalibrateValues;
-    Coordinate3D magnetometerCalibrateValues;
+    Coordinate3D<double> accelerationCalibrateValues;
+    Coordinate3D<double> gyroscopeCalibrateValues;
+    Coordinate3D<double> magnetometerCalibrateValues;
 
-    Coordinate3D accelerationValues;
-    Coordinate3D gyroscopeValues;
-    Coordinate3D magnetometerValues;
+    Coordinate3D<double> accelerationValues;
+    Coordinate3D<double> gyroscopeValues;
+    Coordinate3D<double> magnetometerValues;
 
   public:
     MPU9250Interface(hwlib::pin_oc &scl, hwlib::pin_oc &sda, const int8_t MPUAddr);
@@ -47,7 +47,7 @@ class MPU9250Interface {
      *
      * @return Coordinate3D acceleration calibrated values
      */
-    Coordinate3D getAccelerationCalibrateValues();
+    Coordinate3D<double> getAccelerationCalibrateValues();
 
     /**
      * @brief Get the calibrated Coordinate3D value for the gyroscope
@@ -56,7 +56,7 @@ class MPU9250Interface {
      *
      * @return Coordinate3D gyroscope calibrated values
      */
-    Coordinate3D getGyroscopeCalibrateValues();
+    Coordinate3D<double> getGyroscopeCalibrateValues();
 
     /**
      * @brief Get the calibrated Coordinate3D for the Magnetometer sensor
@@ -65,7 +65,7 @@ class MPU9250Interface {
      *
      * @return Coordinate3D Magnetometer calibrated values
      */
-    Coordinate3D getMagnetometerCalibrateValues();
+    Coordinate3D<double> getMagnetometerCalibrateValues();
 
     /**
      * @brief Get the Accelerator values
@@ -74,7 +74,7 @@ class MPU9250Interface {
      *
      * @return Coordinate3D Gyroscope values
      */
-    Coordinate3D getAccelerationValues();
+    Coordinate3D<double> getAccelerationValues();
 
     /**
      * @brief Get the Gyroscope values
@@ -83,7 +83,7 @@ class MPU9250Interface {
      *
      * @return Coordinate3D Gyroscope values
      */
-    Coordinate3D getGyroscopeValues();
+    Coordinate3D<double> getGyroscopeValues();
 
     /**
      * @brief Get the Accelerator values
@@ -110,13 +110,13 @@ class MPU9250Interface {
      *
      * @return Coordinate3D Magnetometer values
      */
-    Coordinate3D getMagnetometerValues();
+    Coordinate3D<double> getMagnetometerValues();
     /**
      * @brief Prints values of the given Coordinate3D object in the format "X:% Y:% Z:%"
      *
      * @param Coordinate3D object
      */
-    void printValuesX_Y_Z(Coordinate3D values);
+    void printValuesX_Y_Z(Coordinate3D<double> values);
 };
 
 #endif // COORDINATE3D_HPP
