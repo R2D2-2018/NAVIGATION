@@ -9,11 +9,12 @@
 
 #include "wrap-hwlib.hpp"
 
+template <typename T>
 struct Coordinate3D {
   private:
-    int16_t x;
-    int16_t y;
-    int16_t z;
+    T x;
+    T y;
+    T z;
 
   public:
     /**
@@ -29,66 +30,66 @@ struct Coordinate3D {
      *
      * The default constructor to create a new Coordinate3D object.
      *
-     * @param x : int16_t
-     * @param y : int16_t
-     * @param z : int16_t
+     * @param x : T
+     * @param y : T
+     * @param z : T
      *
      */
-    Coordinate3D(int16_t x, int16_t y, int16_t z);
+    Coordinate3D(T x, T y, T z);
 
     /**
      * @brief Set X value
      *
      * Change the X value of the object.
      *
-     * @param value : int16_t
+     * @param value : T
      */
-    void setX(int16_t value);
+    void setX(T value);
 
     /**
      * @brief Set Y value
      *
      * Change the Y value of the object.
      *
-     * @param value : int16_t
+     * @param value : T
      */
-    void setY(int16_t value);
+    void setY(T value);
 
     /**
      * @brief Set Z value
      *
      * Change the Z value of the object.
      *
-     * @param value : int16_t
+     * @param value : T
      */
-    void setZ(int16_t value);
+    void setZ(T value);
 
     /**
      * @brief Return the X value
      *
      * Return the X value of this object.
      *
-     * @return int16_t
+     * @return T
      */
-    int16_t getX();
+    T getX();
 
     /**
      * @brief Return the Y value
      *
      * Return the Y value of this object.
      *
-     * @return int16_t
+     * @return T
      */
-    int16_t getY();
+    T getY();
 
     /**
      * @brief Return the Z value
      *
      * Return the Z value of this object.
      *
-     * @return int16_t
+     * @return T
      */
-    int16_t getZ();
+    T getZ();
 };
 
 #endif // COORDINATE3D_HPP
