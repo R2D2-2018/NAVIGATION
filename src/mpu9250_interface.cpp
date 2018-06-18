@@ -12,11 +12,7 @@ MPU9250Interface::MPU9250Interface(hwlib::pin_oc &scl, hwlib::pin_oc &sda, const
     : scl(scl), sda(sda), MPUAddr(MPUAddr), i2c(hwlib::i2c_bus_bit_banged_scl_sda(scl, sda)) {
 
     hwlib::cout << hwlib::right << "Initializing MPU9250..." << hwlib::endl;
-    /*for (;;) {
-        getAccel();
-        getGyro();
-        getMagn();
-    }*/
+
     uint8_t data[7] = {0x03}; ///< I2C slave 0 register address for AK8963  data
     uint8_t magnReadFlag[1] = {0x0C | 0x80}, readData[1] = {0x87}, continious[1] = {0x06};
 
