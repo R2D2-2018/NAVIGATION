@@ -18,12 +18,12 @@ int main() {
         // hwlib::cout << "Gyroscope: \r\n";
         // hwlib::cout << sensor.getGyroscopeValues().getX() << "|" << sensor.getGyroscopeValues().getY() << "|"
         //             << sensor.getGyroscopeValues().getZ() << "\r\n";
-        hwlib::cout << "Accelerator: \r\n";
-        hwlib::cout << sensor.getAccelerationValues().getX() << "|" << sensor.getAccelerationValues().getY() << "|"
-                    << sensor.getAccelerationValues().getZ() << "\r\n";
-        // hwlib::cout << "Magnetometer: \r\n";
-        // hwlib::cout << sensor.getMagnetometerValues().getX() << "|" << sensor.getMagnetometerValues().getY() << "|"
-        //             << sensor.getMagnetometerValues().getZ() << "\r\n";
+        // hwlib::cout << "Accelerator: \r\n";
+        // hwlib::cout << (int)sensor.getAccelerationValues().getX() << "|" << (int)sensor.getAccelerationValues().getY() << "|"
+        //             << (int)sensor.getAccelerationValues().getZ() << "\r\n";
+        hwlib::cout << "Magnetometer: \r\n";
+        hwlib::cout << (int)sensor.getMagnetometerValues().getX() << "|" << (int)sensor.getMagnetometerValues().getY() << "|"
+                    << (int)sensor.getMagnetometerValues().getZ() << "\r\n";
 
         hwlib::cout << "\r\n";
         hwlib::wait_ms(1000);

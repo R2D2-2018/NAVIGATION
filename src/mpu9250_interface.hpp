@@ -16,9 +16,13 @@
 
 class MPU9250Interface {
   private:
+    float mRes = 10. * 4912. / 32760.0;
     hwlib::pin_oc &scl;
     hwlib::pin_oc &sda;
     const int8_t MPUAddr;
+    // uint8_t Mscale = MFS_16BITS; // Choose either 14-bit or 16-bit magnetometer resolution
+    uint8_t Mmode = 0x06;
+
     hwlib::i2c_bus_bit_banged_scl_sda i2c;
 
     Coordinate3D<double> accelerationCalibrateValues;

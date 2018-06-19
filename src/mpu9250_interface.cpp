@@ -28,6 +28,27 @@ MPU9250Interface::MPU9250Interface(hwlib::pin_oc &scl, hwlib::pin_oc &sda, const
     //
     // END
 
+    // Initialize magnetometer
+    // First extract the factory calibration for each magnetometer axis
+    uint8_t rawData[3] = {0x10};
+    // x/y/z gyro calibration data stored here
+    i2c.write(AK8963_ADDRESS, (uint8_t *)AK8963_CNTL, 0x00); // Power down magnetometer
+    hwlib::wait_ms(10);
+    i2c.write(AK8963_ADDRESS, (uint8_t *)AK8963_CNTL, 0x0F); // Enter Fuse ROM access mode
+    hwlib::wait_ms(10);
+    i2c.write(AK8963_ADDRESS, rawData, 3);
+    i2c.read(AK8963_ADDRESS, rawData, 3);                                    // Read the x-, y-, and z-axis calibration values
+    magnetometerCalibrateValues.setX((float)(rawData[0] - 128) / 256. + 1.); // Return x-axis sensitivity adjustment values, etc.
+    magnetometerCalibrateValues.setY((float)(rawData[1] - 128) / 256. + 1.);
+    magnetometerCalibrateValues.setZ((float)(rawData[2] - 128) / 256. + 1.);
+    i2c.write(AK8963_ADDRESS, (uint8_t *)AK8963_CNTL, 0x00); // Power down magnetometer
+    hwlib::wait_ms(10);
+    // Configure the magnetometer for continuous read and highest resolution
+    // set Mscale bit 4 to 1 (0) to enable 16 (14) bit resolution in CNTL register,
+    // and enable continuous mode data acquisition Mmode (bits [3:0]), 0010 for 8 Hz and 0110 for 100 Hz sample rates
+    i2c.write(AK8963_ADDRESS, (uint8_t *)AK8963_CNTL, 0X10); // Set magnetometer data resolution and sample ODR
+    hwlib::wait_ms(10);
+
     hwlib::wait_us(10000);
 
     i2c.write(INT_PIN_CFG, bypass, 1); // set bypass mode
@@ -59,9 +80,9 @@ Coordinate3D<double> MPU9250Interface::getAccelerationValues() {
 
     // ACCEL_XOUT_H | WITH ACCEL_XOUT_L. 16bit ADC, so divided into 2 bytes. First shift the first one 8 places (1 byte) to the
     // left. Because you receive bit 15 to 8 first. Then you "OR" it with the second byte. "OR", because these places are all o.
-    values.setX((((double)data[0] << 8) | (double)data[1]) / 16384);
-    values.setY((((double)data[2] << 8) | (double)data[3]) / 16384);
-    values.setZ((((double)data[4] << 8) | (double)data[5]) / 16384);
+    values.setX(((data[0] << 8) | data[1]) / 16384);
+    values.setY(((data[2] << 8) | data[3]) / 16384);
+    values.setZ(((data[4] << 8) | data[5]) / 16384);
 
     return values;
 }
@@ -72,9 +93,9 @@ void MPU9250Interface::saveAccelerationValues() {
     i2c.write(MPUAddr, data, 1);
     i2c.read(MPUAddr, data, 6);
 
-    accelerationValues.setX((((int16_t)data[0] << 8) | (int16_t)data[1]) / 16384);
-    accelerationValues.setY((((int16_t)data[2] << 8) | (int16_t)data[3]) / 16384);
-    accelerationValues.setZ((((int16_t)data[4] << 8) | (int16_t)data[5]) / 16384);
+    accelerationValues.setX(((data[0] << 8) | data[1]) / 16384);
+    accelerationValues.setY(((data[2] << 8) | data[3]) / 16384);
+    accelerationValues.setZ(((data[4] << 8) | data[5]) / 16384);
 }
 
 Coordinate3D<double> MPU9250Interface::getGyroscopeValues() {
@@ -84,9 +105,9 @@ Coordinate3D<double> MPU9250Interface::getGyroscopeValues() {
     i2c.write(MPUAddr, data, 1);
     i2c.read(MPUAddr, data, 6);
 
-    values.setX((((int16_t)data[0] << 8) | (int16_t)data[1]));
-    values.setY((((int16_t)data[2] << 8) | (int16_t)data[3]));
-    values.setZ((((int16_t)data[4] << 8) | (int16_t)data[5]));
+    values.setX(((data[0] << 8) | data[1]));
+    values.setY(((data[2] << 8) | data[3]));
+    values.setZ(((data[4] << 8) | data[5]));
 
     return values;
 }
@@ -97,30 +118,33 @@ void MPU9250Interface::saveGyroscopeValues() {
     i2c.write(MPUAddr, data, 1); // Write 1 byte to MPU
     i2c.read(MPUAddr, data, 6);  // Read 6
 
-    gyroscopeValues.setX((((int16_t)data[0] << 8) | (int16_t)data[1]));
-    gyroscopeValues.setY((((int16_t)data[2] << 8) | (int16_t)data[3]));
-    gyroscopeValues.setZ((((int16_t)data[4] << 8) | (int16_t)data[5]));
+    gyroscopeValues.setX(((data[0] << 8) | data[1]));
+    gyroscopeValues.setY(((data[2] << 8) | data[3]));
+    gyroscopeValues.setZ(((data[4] << 8) | data[5]));
 }
 
 Coordinate3D<double> MPU9250Interface::getMagnetometerValues() {
-    uint8_t data[7] = {0x03}; ///< I2C slave 0 register address for AK8963  data
+    // Returns milliGauss
+    uint8_t data[7] = {0x03};            // I2C slave 0 register address for AK8963 data
+    float magCalibration[3] = {0, 0, 0}; // Factory mag calibration and mag bias
+
     Coordinate3D<double> values;
 
-    while (magnetometerValues.getX() == 0 && magnetometerValues.getY() == 0 && magnetometerValues.getZ() == 0) {
-        i2c.read(MPUAddr, data, 7);
-        // must start your read from AK8963A register 0x03 and read seven bytes so that upon read of ST2 register 0x09 the AK8963A
-        // will unlatch the data registers for the next measurement
-        uint8_t c = data[6]; // end data read by reading ST2
+    // while (magnetometerValues.getX() == 0 && magnetometerValues.getY() == 0 && magnetometerValues.getZ() == 0) {
+    i2c.read(MPUAddr, data, 7);
+    // must start your read from AK8963A register 0x03 and read seven bytes so that upon read of ST2 register 0x09 the AK8963A
+    // will unlatch the data registers for the next measurement
+    uint8_t c = data[6]; // end data read by reading ST2
 
-        if (!(c & 0x08)) { // Check if magnetometer sensor overflow set, if not then report data
-            values.setX(((int16_t)data[1] << 8) | (int16_t)data[0]);
-            values.setY(((int16_t)data[3] << 8) | (int16_t)data[2]);
-            values.setZ(((int16_t)data[5] << 8) | (int16_t)data[4]);
-            magnetometerValues.setX(((int16_t)data[1] << 8) | (int16_t)data[0]);
-            magnetometerValues.setY(((int16_t)data[3] << 8) | (int16_t)data[2]);
-            magnetometerValues.setZ(((int16_t)data[5] << 8) | (int16_t)data[4]);
-        }
+    if (!(c & 0x08)) { // Check if magnetometer sensor overflow set, if not then report data
+        values.setX((data[1] << 8) | data[0]);
+        values.setY((data[3] << 8) | data[2]);
+        values.setZ((data[5] << 8) | data[4]);
+        magnetometerValues.setX((data[1] << 8) | data[0]);
+        magnetometerValues.setY((data[3] << 8) | data[2]);
+        magnetometerValues.setZ((data[5] << 8) | data[4]);
     }
+    // }
     return values;
 }
 
