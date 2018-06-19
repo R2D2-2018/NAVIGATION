@@ -11,7 +11,6 @@ include_directories (${catch}/single_include)
 # Source Files:
 
 set (sources
-    src/coordinate3d.cpp
     src/libc-stub.cpp
     src/mpu9250_interface.cpp
     src/navigation_engine.cpp
