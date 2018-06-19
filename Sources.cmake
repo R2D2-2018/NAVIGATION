@@ -12,10 +12,12 @@ include_directories (${catch}/single_include)
 
 set (sources
     src/coordinate3d.cpp
-    src/navigation_engine.cpp
-    src/navigation_path.cpp
-    src/wrap-hwlib.cpp
     src/libc-stub.cpp
     src/mpu9250_interface.cpp
+    src/navigation_engine.cpp
+    src/navigation_path.cpp
+    src/path.cpp
+    src/vector2f.cpp
+    src/wrap-hwlib.cpp
 
 )

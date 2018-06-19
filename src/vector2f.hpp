@@ -9,6 +9,10 @@
 #define VECTOR2F_HPP
 
 class Vector2f {
+  private:
+    float x;
+    float y;
+
   public:
     /**
      * @brief creates a Vector2f object
@@ -32,8 +36,41 @@ class Vector2f {
      */
     Vector2f(float x, float y) : x(x), y(y) {
     }
-    float x;
-    float y;
+
+    /**
+     * @brief Return X value.
+     *
+     * This function returns the X value
+     *
+     * @return float
+     */
+    float getX();
+
+    /**
+     * @brief Return Y value.
+     *
+     * This function returns the Y value
+     *
+     * @return float
+     */
+    float getY();
+    /**
+     * @brief Set the X value
+     *
+     * Set the X value to something different.
+     *
+     * @param value
+     */
+    void setX(float value);
+    /**
+     * @brief Set the Y value
+     *
+     * Set the Y value to something different.
+     *
+     * @param value : float
+     *
+     */
+    void setY(float value);
 };
 
 #endif
