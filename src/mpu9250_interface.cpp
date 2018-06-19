@@ -34,9 +34,21 @@ MPU9250Interface::MPU9250Interface(hwlib::pin_oc &scl, hwlib::pin_oc &sda, const
 }
 
 void MPU9250Interface::calibrate() {
-    accelerationCalibrateValues = getAccelerationValues();
-    gyroscopeCalibrateValues = getGyroscopeValues();
-    magnetometerCalibrateValues = getMagnetometerValues();
+    hwlib::cout << "Calibrating the Acceleration, gyro and magnetsensor" << hwlib::endl;
+    for(int i = 0; i < 10; i++){
+        accelerationCalibrateValues += getAccelerationValues();
+        gyroscopeCalibrateValues += getGyroscopeValues();
+        magnetometerCalibrateValues += getMagnetometerValues();
+        hwlib::wait_ms(100);
+    }
+    accelerationCalibrateValues /= 10;
+    hwlib::cout 
+    << "x: " << accelerationCalibrateValues.getX()
+    << "y: " << accelerationCalibrateValues.getY()
+    << "z: " << accelerationCalibrateValues.getZ() << hwlib::endl;
+    gyroscopeCalibrateValues /= 10;
+    magnetometerCalibrateValues /= 10;
+    hwlib::wait_ms(1000);
 }
 
 Coordinate3D MPU9250Interface::getAccelerationCalibrateValues() {

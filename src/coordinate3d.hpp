@@ -89,6 +89,24 @@ struct Coordinate3D {
      * @return int16_t
      */
     int16_t getZ();
+
+    /**
+     * @brief coordinate3D += operator
+     *
+     * Returns a coordinate3D after adding another coordinate3D to it.
+     *
+     * @return Coordinate3D
+     */
+    Coordinate3D & operator+=(const Coordinate3D & rhs);
+
+    /**
+     * @brief Coordinate3D /= operator
+     *
+     * Returns a coordinate3D after dividing it with an intiger.
+     *
+     * @return Coordinate3D
+     */
+    Coordinate3D & operator/=(const int divider);
 };
 
 #endif // COORDINATE3D_HPP
