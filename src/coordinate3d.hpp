@@ -36,7 +36,8 @@ struct Coordinate3D {
      * @param z : T
      *
      */
-    Coordinate3D(T x, T y, T z);
+    Coordinate3D(T x, T y, T z) : x(x), y(y), z(z) {
+    }
 
     /**
      * @brief Set X value
@@ -45,7 +46,9 @@ struct Coordinate3D {
      *
      * @param value : T
      */
-    void setX(T value);
+    void setX(T value) {
+        x = value;
+    }
 
     /**
      * @brief Set Y value
@@ -54,7 +57,9 @@ struct Coordinate3D {
      *
      * @param value : T
      */
-    void setY(T value);
+    void setY(T value) {
+        y = value;
+    }
 
     /**
      * @brief Set Z value
@@ -63,7 +68,9 @@ struct Coordinate3D {
      *
      * @param value : T
      */
-    void setZ(T value);
+    void setZ(T value) {
+        z = value;
+    }
 
     /**
      * @brief Return the X value
@@ -72,7 +79,9 @@ struct Coordinate3D {
      *
      * @return T
      */
-    T getX();
+    T getX() {
+        return x;
+    }
 
     /**
      * @brief Return the Y value
@@ -81,7 +90,9 @@ struct Coordinate3D {
      *
      * @return T
      */
-    T getY();
+    T getY() {
+        return y;
+    }
 
     /**
      * @brief Return the Z value
@@ -90,7 +101,9 @@ struct Coordinate3D {
      *
      * @return T
      */
-    T getZ();
+    T getZ() {
+        return z;
+    }
 };
 
 #endif // COORDINATE3D_HPP
