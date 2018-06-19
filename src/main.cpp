@@ -16,7 +16,7 @@ int main() {
     MPU9250Interface sensor(scl, sda, address);
     sensor.calibrate();
 
-    for (;;) {
+    for (int i = 0; i < 3; i++) {
         x = (double(sensor.getAccelerationValues().getX()) / 16384) * 1000;
         y = (double(sensor.getAccelerationValues().getY()) / 16384) * 1000;
         z = (double(sensor.getAccelerationValues().getZ()) / 16384) * 1000;
@@ -27,9 +27,9 @@ int main() {
                     << " Z: " << (sensor.getAccelerationValues().getZ()) << "\r\n";
 
         hwlib::cout << "Accelerator corrected: \r\n"
-                    << " X: " << (sensor.getAccelerationValues().getX() + sensor.getAccelerationCalibrateValues().getX()) << "\r\n"
-                    << " Y: " << (sensor.getAccelerationValues().getY() + sensor.getAccelerationCalibrateValues().getY()) << "\r\n"
-                    << " Z: " << (sensor.getAccelerationValues().getZ() + sensor.getAccelerationCalibrateValues().getZ()) << "\r\n";
+                    << " X: " << (sensor.getAccelerationValues().getX() - sensor.getAccelerationCalibrateValues().getX()) << "\r\n"
+                    << " Y: " << (sensor.getAccelerationValues().getY() - sensor.getAccelerationCalibrateValues().getY()) << "\r\n"
+                    << " Z: " << (sensor.getAccelerationValues().getZ() - sensor.getAccelerationCalibrateValues().getZ()) << "\r\n";
 
         hwlib::cout << "Gyroscope: \r\n"
                     << sensor.getGyroscopeValues().getX() << "|" << sensor.getGyroscopeValues().getY() << "|"

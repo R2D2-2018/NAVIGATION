@@ -45,6 +45,50 @@ TEST_CASE("Coordinates 3D set coordinates negative") {
     REQUIRE(coordinates.getZ() == -130);
 }
 
+TEST_CASE("Coordinates 3D + operator") {
+    Coordinate3D coordinates(100, 100, 100);
+    Coordinate3D coordinates2(100, 100, 100);
+
+    Coordinate3D coordinates3 = coordinates + coordinates2;
+
+    REQUIRE(coordinates3.getX() == 200);
+    REQUIRE(coordinates3.getY() == 200);
+    REQUIRE(coordinates3.getZ() == 200);
+}
+
+TEST_CASE("Coordinates 3D - operator") {
+    Coordinate3D coordinates(100, 100, 100);
+    Coordinate3D coordinates2(100, 100, 100);
+
+    Coordinate3D coordinates3 = coordinates - coordinates2;
+
+    REQUIRE(coordinates3.getX() == 0);
+    REQUIRE(coordinates3.getY() == 0);
+    REQUIRE(coordinates3.getZ() == 0);
+}
+
+TEST_CASE("Coordinates 3D * operator with integer") {
+    Coordinate3D coordinates(100, 100, 100);
+    int x = 10;
+
+    Coordinate3D coordinates2 = coordinates * x;
+
+    REQUIRE(coordinates2.getX() == 1000);
+    REQUIRE(coordinates2.getY() == 1000);
+    REQUIRE(coordinates2.getZ() == 1000);
+}
+
+TEST_CASE("Coordinates 3D / operator with integer") {
+    Coordinate3D coordinates(100, 100, 100);
+    int x = 2;
+
+    Coordinate3D coordinates2 = coordinates / x;
+
+    REQUIRE(coordinates2.getX() == 50);
+    REQUIRE(coordinates2.getY() == 50);
+    REQUIRE(coordinates2.getZ() == 50);
+}
+
 TEST_CASE("Coordinates 3D += operator") {
     Coordinate3D coordinates(100, 100, 100);
     Coordinate3D coordinates2(100, 100, 100);

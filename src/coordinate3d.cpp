@@ -57,3 +57,26 @@ Coordinate3D &Coordinate3D::operator/=(const int divider) {
     z /= divider;
     return *this;
 }
+
+Coordinate3D Coordinate3D::operator+(const Coordinate3D &rhs) const {
+    Coordinate3D temp = *this;
+    temp += rhs;
+    return temp;
+}
+
+Coordinate3D Coordinate3D::operator-(const Coordinate3D &rhs) const {
+    Coordinate3D temp = *this;
+    temp -= rhs;
+    return temp;
+}
+Coordinate3D Coordinate3D::operator/(const int divider) const {
+    Coordinate3D temp = *this;
+    temp /= divider;
+    return temp;
+}
+
+Coordinate3D Coordinate3D::operator*(const int multiplier) const {
+    Coordinate3D temp = *this;
+    temp *= multiplier;
+    return temp;
+}
