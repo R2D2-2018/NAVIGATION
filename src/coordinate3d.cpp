@@ -30,14 +30,28 @@ int16_t Coordinate3D::getZ() {
     return z;
 }
 
-Coordinate3D & Coordinate3D::operator+=(const Coordinate3D & rhs){
+Coordinate3D &Coordinate3D::operator+=(const Coordinate3D &rhs) {
     x += rhs.x;
     y += rhs.y;
     z += rhs.z;
     return *this;
 }
 
-Coordinate3D & Coordinate3D::operator/=(const int divider){
+Coordinate3D &Coordinate3D::operator-=(const Coordinate3D &rhs) {
+    x -= rhs.x;
+    y -= rhs.y;
+    z -= rhs.z;
+    return *this;
+}
+
+Coordinate3D &Coordinate3D::operator*=(const int multiplier) {
+    x *= multiplier;
+    y *= multiplier;
+    z *= multiplier;
+    return *this;
+}
+
+Coordinate3D &Coordinate3D::operator/=(const int divider) {
     x /= divider;
     y /= divider;
     z /= divider;

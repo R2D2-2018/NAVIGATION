@@ -97,7 +97,25 @@ struct Coordinate3D {
      *
      * @return Coordinate3D
      */
-    Coordinate3D & operator+=(const Coordinate3D & rhs);
+    Coordinate3D &operator+=(const Coordinate3D &rhs);
+
+    /**
+     * @brief coordinate3D -= operator
+     *
+     * Returns a coordinate3D after subtracting another coordinate3D to it.
+     *
+     * @return Coordinate3D
+     */
+    Coordinate3D &operator-=(const Coordinate3D &rhs);
+
+    /**
+     * @brief Coordinate3D *= operator
+     *
+     * Returns a coordinate3D after multiplying it with an intiger.
+     *
+     * @return Coordinate3D
+     */
+    Coordinate3D &operator*=(const int multiplier);
 
     /**
      * @brief Coordinate3D /= operator
@@ -106,7 +124,7 @@ struct Coordinate3D {
      *
      * @return Coordinate3D
      */
-    Coordinate3D & operator/=(const int divider);
+    Coordinate3D &operator/=(const int divider);
 };
 
 #endif // COORDINATE3D_HPP

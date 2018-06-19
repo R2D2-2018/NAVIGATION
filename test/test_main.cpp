@@ -45,6 +45,50 @@ TEST_CASE("Coordinates 3D set coordinates negative") {
     REQUIRE(coordinates.getZ() == -130);
 }
 
+TEST_CASE("Coordinates 3D += operator") {
+    Coordinate3D coordinates(100, 100, 100);
+    Coordinate3D coordinates2(100, 100, 100);
+
+    coordinates += coordinates2;
+
+    REQUIRE(coordinates.getX() == 200);
+    REQUIRE(coordinates.getY() == 200);
+    REQUIRE(coordinates.getZ() == 200);
+}
+
+TEST_CASE("Coordinates 3D -= operator") {
+    Coordinate3D coordinates(100, 100, 100);
+    Coordinate3D coordinates2(100, 100, 100);
+
+    coordinates -= coordinates2;
+
+    REQUIRE(coordinates.getX() == 0);
+    REQUIRE(coordinates.getY() == 0);
+    REQUIRE(coordinates.getZ() == 0);
+}
+
+TEST_CASE("Coordinates 3D *= operator with integer") {
+    Coordinate3D coordinates(100, 100, 100);
+    int x = 10;
+
+    coordinates *= x;
+
+    REQUIRE(coordinates.getX() == 1000);
+    REQUIRE(coordinates.getY() == 1000);
+    REQUIRE(coordinates.getZ() == 1000);
+}
+
+TEST_CASE("Coordinates 3D /= operator with integer") {
+    Coordinate3D coordinates(100, 100, 100);
+    int x = 10;
+
+    coordinates /= x;
+
+    REQUIRE(coordinates.getX() == 10);
+    REQUIRE(coordinates.getY() == 10);
+    REQUIRE(coordinates.getZ() == 10);
+}
+
 TEST_CASE("Navigation Path in/out test", "[navigation_path]") {
     // Preconditions:
     NavigationPath path;
