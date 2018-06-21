@@ -22,9 +22,8 @@ int main() {
         // hwlib::cout << (int)sensor.getAccelerationValues().getX() << "|" << (int)sensor.getAccelerationValues().getY() << "|"
         //             << (int)sensor.getAccelerationValues().getZ() << "\r\n";
         hwlib::cout << "Magnetometer: \r\n";
-        hwlib::cout << (int)sensor.getMagnetometerCalibrateValues().getX() << "|"
-                    << (int)sensor.getMagnetometerCalibrateValues().getY() << "|"
-                    << (int)sensor.getMagnetometerCalibrateValues().getZ() << "\r\n";
+        hwlib::cout << (int)sensor.getMagnetometerValues().getX() << " | " << (int)sensor.getMagnetometerValues().getY() << " | "
+                    << (int)sensor.getMagnetometerValues().getZ() << " | ";
 
         hwlib::cout << "\r\n";
         hwlib::wait_ms(1000);

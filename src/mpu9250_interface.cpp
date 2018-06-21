@@ -67,6 +67,116 @@ void MPU9250Interface::calibrate() {
     magnetometerCalibrateValues = getMagnetometerValues();
 }
 
+void MPU9250Interface::saveAccelerationValues() {
+    uint8_t data[6] = {0x3B}; ///< address where MPU data starts
+
+    i2c.write(MPUAddr, data, 1);
+    i2c.read(MPUAddr, data, 6);
+
+    // ACCEL_XOUT_H | WITH ACCEL_XOUT_L. 16bit ADC, so divided into 2 bytes. First shift the first one 8 places (1 byte) to the
+    // left. Because you receive bit 15 to 8 first. Then you "OR" it with the second byte. "OR", because these places are all o.
+
+    accelerationValues.setX(((data[0] << 8) | data[1]) / 16384);
+    accelerationValues.setY(((data[2] << 8) | data[3]) / 16384);
+    accelerationValues.setZ(((data[4] << 8) | data[5]) / 16384);
+}
+
+void MPU9250Interface::saveGyroscopeValues() {
+    uint8_t data[6] = {0x43}; ///< address where MPU data starts
+
+    i2c.write(MPUAddr, data, 1); // Write 1 byte to MPU
+    i2c.read(MPUAddr, data, 6);  // Read 6
+
+    // float q[4] = {1.0f, 0.0f, 0.0f, 0.0f};
+    // float pitch; // Gyroscope rotation over the lateral axis (X)
+    // float yaw;   // Gyroscope rotation over the vertical axis (Y)
+    // float roll;  // Gyroscope rotation over the longitudinal axis (Z)
+    float gRes = 250.0 / 32768.0;
+
+    i2c.write(MPUAddr, data, 1);
+    i2c.read(MPUAddr, data, 6);
+
+    // yaw = atan2(2.0f * (q[1] * q[2] + q[0] * q[3]), q[0] * q[0] + q[1] * q[1] - q[2] * q[2] - q[3] * q[3]);
+    // pitch = -asin(2.0f * (q[1] * q[3] - q[0] * q[2]));
+    // roll = atan2(2.0f * (q[0] * q[1] + q[2] * q[3]), q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3]);
+    // pitch *= 180.0f / M_PI;
+    // yaw *= 180.0f / M_PI;
+    // yaw -= 13.8; // Declination at Danville, California is 13 degrees 48 minutes and 47 seconds on 2014-04-04
+    // roll *= 180.0f / M_PI;
+
+    // ACCEL_XOUT_H | WITH ACCEL_XOUT_L. 16bit ADC, so divided into 2 bytes. First shift the first one 8 places (1 byte) to the
+    // left. Because you receive bit 15 to 8 first. Then you "OR" it with the second byte. "OR", because these places are all o.
+    float x = ((data[0] << 8) | data[1]);
+    float y = ((data[2] << 8) | data[3]);
+    float z = ((data[4] << 8) | data[5]);
+
+    float realValueX = (float)x * gRes; // get actual gyro value, this depends on scale being set
+    float realValueY = (float)y * gRes;
+    float realValueZ = (float)z * gRes;
+
+    gyroscopeValues.setX(realValueX);
+    gyroscopeValues.setY(realValueY);
+    gyroscopeValues.setZ(realValueZ);
+    // gyroscopeValues.setX(x);
+    // gyroscopeValues.setY(y);
+    // gyroscopeValues.setZ(z);
+}
+
+void MPU9250Interface::saveMagnetometerValues() {
+    float rawX = 0.0;
+    float rawY = 0.0;
+    float rawZ = 0.0;
+
+    float magCalibration[3] = {0, 0, 0};
+    float magBias[3] = {0, 0, 0};
+    float mRes = 10. * 4912. / 32760.0;
+
+    magBias[0] = +470.; // User environmental x-axis correction in milliGauss, should be automatically calculated
+    magBias[1] = +120.; // User environmental x-axis correction in milliGauss
+    magBias[2] = +125.; // User environmental x-axis correction in milliGauss
+
+    uint8_t startByte[1] = {AK8963_ST1};
+    i2c.read(MPUAddr, startByte, 1);
+
+    // must start your read from AK8963A register 0x03 and read seven bytes so that upon read of ST2 register 0x09 the AK8963A
+    // will unlatch the data registers for the next measurement
+
+    uint8_t data[7] = {AK8963_XOUT_L}; // I2C slave 0 register address for AK8963 data
+
+    if (startByte[0] & 0x01) { // Startbyte
+        i2c.read(MPUAddr, data, 7);
+        uint8_t c = data[6];
+        if (!(c & 0x08)) { // Check if magnetometer sensor overflow set, if not then report data
+            rawX = ((int16_t)data[1] << 8) | data[0];
+            rawY = ((int16_t)data[3] << 8) | data[2];
+            rawZ = (int16_t)(data[5] << 8) | data[4];
+        }
+    }
+
+    float correctedX = rawX; // * mRes * magCalibration[0] - magBias[0];
+    float correctedY = rawY; // * mRes * magCalibration[1] - magBias[1];
+    float correctedZ = rawZ; // * mRes * magCalibration[2] - magBias[2];
+
+    magnetometerValues.setX(correctedX);
+    magnetometerValues.setY(correctedY);
+    magnetometerValues.setZ(correctedZ);
+}
+
+Coordinate3D<float> MPU9250Interface::getAccelerationValues() {
+    saveAccelerationValues();
+    return accelerationValues;
+}
+
+Coordinate3D<float> MPU9250Interface::getGyroscopeValues() {
+    saveGyroscopeValues();
+    return gyroscopeValues;
+}
+
+Coordinate3D<float> MPU9250Interface::getMagnetometerValues() {
+    saveMagnetometerValues();
+    return magnetometerValues;
+}
+
 Coordinate3D<float> MPU9250Interface::getAccelerationCalibrateValues() {
     return accelerationCalibrateValues;
 }
@@ -77,82 +187,6 @@ Coordinate3D<float> MPU9250Interface::getGyroscopeCalibrateValues() {
 
 Coordinate3D<float> MPU9250Interface::getMagnetometerCalibrateValues() {
     return magnetometerCalibrateValues;
-}
-
-Coordinate3D<float> MPU9250Interface::getAccelerationValues() {
-    uint8_t data[6] = {0x3B}; ///< address where MPU data starts
-    Coordinate3D<float> values;
-    i2c.write(MPUAddr, data, 1);
-    i2c.read(MPUAddr, data, 6);
-
-    // ACCEL_XOUT_H | WITH ACCEL_XOUT_L. 16bit ADC, so divided into 2 bytes. First shift the first one 8 places (1 byte) to the
-    // left. Because you receive bit 15 to 8 first. Then you "OR" it with the second byte. "OR", because these places are all o.
-    values.setX(((data[0] << 8) | data[1]) / 16384);
-    values.setY(((data[2] << 8) | data[3]) / 16384);
-    values.setZ(((data[4] << 8) | data[5]) / 16384);
-
-    return values;
-}
-
-void MPU9250Interface::saveAccelerationValues() {
-    uint8_t data[6] = {0x3B}; ///< address where MPU data starts (SHOULD BE 43)
-
-    i2c.write(MPUAddr, data, 1);
-    i2c.read(MPUAddr, data, 6);
-
-    accelerationValues.setX(((data[0] << 8) | data[1]) / 16384);
-    accelerationValues.setY(((data[2] << 8) | data[3]) / 16384);
-    accelerationValues.setZ(((data[4] << 8) | data[5]) / 16384);
-}
-
-Coordinate3D<float> MPU9250Interface::getGyroscopeValues() {
-    uint8_t data[6] = {0x43}; ///< address where MPU data starts
-    Coordinate3D<float> values;
-
-    i2c.write(MPUAddr, data, 1);
-    i2c.read(MPUAddr, data, 6);
-
-    values.setX(((data[0] << 8) | data[1]));
-    values.setY(((data[2] << 8) | data[3]));
-    values.setZ(((data[4] << 8) | data[5]));
-
-    return values;
-}
-
-void MPU9250Interface::saveGyroscopeValues() {
-    uint8_t data[6] = {0x43}; ///< address where MPU data starts
-
-    i2c.write(MPUAddr, data, 1); // Write 1 byte to MPU
-    i2c.read(MPUAddr, data, 6);  // Read 6
-
-    gyroscopeValues.setX(((data[0] << 8) | data[1]));
-    gyroscopeValues.setY(((data[2] << 8) | data[3]));
-    gyroscopeValues.setZ(((data[4] << 8) | data[5]));
-}
-
-Coordinate3D<float> MPU9250Interface::getMagnetometerValues() {
-    // Returns milliGauss
-    uint8_t data[7] = {0x03}; // I2C slave 0 register address for AK8963 data
-    // float magCalibration[3] = {0, 0, 0}; // Factory mag calibration and mag bias
-
-    Coordinate3D<float> values;
-
-    // while (magnetometerValues.getX() == 0 && magnetometerValues.getY() == 0 && magnetometerValues.getZ() == 0) {
-    i2c.read(MPUAddr, data, 7);
-    // must start your read from AK8963A register 0x03 and read seven bytes so that upon read of ST2 register 0x09 the AK8963A
-    // will unlatch the data registers for the next measurement
-    uint8_t c = data[6]; // end data read by reading ST2
-
-    if (!(c & 0x08)) { // Check if magnetometer sensor overflow set, if not then report data
-        values.setX((data[1] << 8) | data[0]);
-        values.setY((data[3] << 8) | data[2]);
-        values.setZ((data[5] << 8) | data[4]);
-        magnetometerValues.setX((data[1] << 8) | data[0]);
-        magnetometerValues.setY((data[3] << 8) | data[2]);
-        magnetometerValues.setZ((data[5] << 8) | data[4]);
-    }
-    // }
-    return values;
 }
 
 void MPU9250Interface::printValuesX_Y_Z(Coordinate3D<float> values) {
