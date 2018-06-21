@@ -21,6 +21,9 @@ class MPU9250Interface {
     const int8_t MPUAddr;
     hwlib::i2c_bus_bit_banged_scl_sda i2c;
 
+    float gyroRes = 250.0f / 32768.0f;
+    float accelRes = 2.0f / 32768.0f;
+
     Coordinate3D accelerationCalibrateValues;
     Coordinate3D gyroscopeCalibrateValues;
     Coordinate3D magnetometerCalibrateValues;
@@ -30,7 +33,7 @@ class MPU9250Interface {
     Coordinate3D magnetometerValues;
 
   public:
-    MPU9250Interface(hwlib::pin_oc &scl, hwlib::pin_oc &sda, const int8_t MPUAddr);
+    MPU9250Interface(hwlib::pin_oc &scl, hwlib::pin_oc &sda, const uint8_t MPUAddr);
 
     /**
      * @brief Calibrate the sensor
@@ -120,15 +123,28 @@ class MPU9250Interface {
     void printValuesX_Y_Z(Coordinate3D values);
 
     /**
-     * @brief Prints values of the accelerationValues Coordinate3D object in gravity(meter/second/10000) the format "X:% Y:% Z:%"
+     * @brief Prints values of the accelerationValues Coordinate3D object in gravity(meter/second/100) the format "X:% Y:% Z:%"
      */
     void printAccelerationGravity();
+
     /**
-     * @brief Prints values of the accelerationValues Coordinate3D object in gravity(meter/second/10000) the format "X:% Y:% Z:%"
+     * @brief Prints values of the accelerationValues Coordinate3D object in gravity(meter/second/100) the format "X:% Y:% Z:%"
      *
      * @param acceleration : Coordinate3D
      */
     void printAccelerationGravity(Coordinate3D acceleration);
+
+    /**
+     * @brief Prints values of the gyroscopeValues Coordinate3D object in Degrees/sec the format "X:% Y:% Z:%"
+     */
+    void printGyroscopeDegreeSec();
+
+    /**
+     * @brief Prints values of the gyroscopeValues Coordinate3D object in Degrees/sec the format "X:% Y:% Z:%"
+     *
+     * @param gyroscope : Coordinate3D
+     */
+    void printGyroscopeDegreeSec(Coordinate3D gyroscope);
 };
 
 #endif // COORDINATE3D_HPP
