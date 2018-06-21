@@ -14,8 +14,7 @@ class PolarVector2f {
      *
      * @return a Vector2f object
      */
-    PolarVector2f() {
-    }
+    PolarVector2f();
 
     /**
      * @brief creates a Vector2f object
@@ -37,7 +36,9 @@ class PolarVector2f {
      *
      * @return float
      */
-    float getAngle();
+    float getAngle() {
+        return angle;
+    }
 
     /**
      * @brief Return distance
@@ -46,24 +47,31 @@ class PolarVector2f {
      *
      * @return float
      */
-    float getDistance();
+    float getDistance() {
+        return distance;
+    }
+
     /**
      * @brief Set the angle
      *
      * Set the angle to something different.
      *
-     * @param value
+     * @param value * /
      */
-    void setAngle(float value);
+    void setAngle(float value) {
+        angle = value;
+    }
+
     /**
      * @brief Set the distance
      *
      * Set the distance to something different.
      *
      * @param value : float
-     *
      */
-    void setDistance(float value);
+    void setDistance(float value) {
+        distance = value;
+    }
 };
 
 #endif // POLAR_VECTOR2F_HPP
