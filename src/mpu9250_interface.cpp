@@ -41,7 +41,7 @@ void MPU9250Interface::calibrate() {
         magnetometerCalibrateValues = (magnetometerCalibrateValues / 2) + (getMagnetometerValues() / 2);
         hwlib::wait_ms(100);
     }
-    accelerationCalibrateValues.setZ(accelerationCalibrateValues.getZ()+16384);
+    accelerationCalibrateValues.setZ(accelerationCalibrateValues.getZ() + 16384);
 }
 
 Coordinate3D MPU9250Interface::getAccelerationCalibrateValues() {

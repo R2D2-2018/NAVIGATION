@@ -125,7 +125,7 @@ class MPU9250Interface {
     void printAccelerationGravity();
     /**
      * @brief Prints values of the accelerationValues Coordinate3D object in gravity(meter/second/10000) the format "X:% Y:% Z:%"
-     * 
+     *
      * @param acceleration : Coordinate3D
      */
     void printAccelerationGravity(Coordinate3D acceleration);

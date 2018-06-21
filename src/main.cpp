@@ -28,7 +28,7 @@ int main() {
                     << " X: " << (sensor.getAccelerationValues().getX() - sensor.getAccelerationCalibrateValues().getX()) << "\r\n"
                     << " Y: " << (sensor.getAccelerationValues().getY() - sensor.getAccelerationCalibrateValues().getY()) << "\r\n"
                     << " Z: " << (sensor.getAccelerationValues().getZ() - sensor.getAccelerationCalibrateValues().getZ()) << "\r\n";
-                    sensor.printAccelerationGravity();
+        sensor.printAccelerationGravity();
 
         hwlib::cout << "Gyroscope: \r\n"
                     << " X: " << sensor.getGyroscopeValues().getX() << "Degree/sec \r\n"
