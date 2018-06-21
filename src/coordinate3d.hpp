@@ -95,6 +95,8 @@ struct Coordinate3D {
      *
      * Returns a coordinate3D after adding another coordinate3D to it.
      *
+     * @param rhs : const Coordinate3D &
+     *
      * @return Coordinate3D
      */
     Coordinate3D &operator+=(const Coordinate3D &rhs);
@@ -103,6 +105,8 @@ struct Coordinate3D {
      * @brief coordinate3D -= operator
      *
      * Returns a coordinate3D after subtracting another coordinate3D to it.
+     *
+     * @param rhs : const Coordinate3D &
      *
      * @return Coordinate3D
      */
@@ -113,6 +117,8 @@ struct Coordinate3D {
      *
      * Returns a coordinate3D after multiplying it with an intiger.
      *
+     * @param multiplier : const int
+     *
      * @return Coordinate3D
      */
     Coordinate3D &operator*=(const int multiplier);
@@ -121,6 +127,8 @@ struct Coordinate3D {
      * @brief Coordinate3D /= operator
      *
      * Returns a coordinate3D after dividing it with an intiger.
+     *
+     * @param divider : const int
      *
      * @return Coordinate3D
      */
@@ -131,6 +139,8 @@ struct Coordinate3D {
      *
      * Returns a coordinate3D after adding another coordinate3D to it.
      *
+     * @param rhs : const Coordinate3D &
+     *
      * @return Coordinate3D
      */
     Coordinate3D operator+(const Coordinate3D &rhs) const;
@@ -140,6 +150,8 @@ struct Coordinate3D {
      *
      * Returns a coordinate3D after subtracting another coordinate3D to it.
      *
+     * @param rhs : const Coordinate3D &
+     *
      * @return Coordinate3D
      */
     Coordinate3D operator-(const Coordinate3D &rhs) const;
@@ -148,6 +160,8 @@ struct Coordinate3D {
      *
      * Returns a coordinate3D after dividing it with an intiger.
      *
+     * @param divider : const int
+     *
      * @return Coordinate3D
      */
     Coordinate3D operator/(const int divider) const;
@@ -155,6 +169,8 @@ struct Coordinate3D {
      * @brief Coordinate3D * operator
      *
      * Returns a coordinate3D after multiplying it with an intiger.
+     *
+     * @param multiplier : const int
      *
      * @return Coordinate3D
      */

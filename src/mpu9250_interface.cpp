@@ -41,6 +41,7 @@ void MPU9250Interface::calibrate() {
         magnetometerCalibrateValues = (magnetometerCalibrateValues / 2) + (getMagnetometerValues() / 2);
         hwlib::wait_ms(100);
     }
+    accelerationCalibrateValues.setZ(accelerationCalibrateValues.getZ()+16384);
 }
 
 Coordinate3D MPU9250Interface::getAccelerationCalibrateValues() {
@@ -129,5 +130,22 @@ Coordinate3D MPU9250Interface::getMagnetometerValues() {
 }
 
 void MPU9250Interface::printValuesX_Y_Z(Coordinate3D values) {
-    hwlib::cout << hwlib::right << "X: " << values.getX() << " Y: " << values.getY() << " Z: " << values.getZ() << hwlib::endl;
+    hwlib::cout << hwlib::right << " X: " << values.getX() << "\r\n"
+                << " Y: " << values.getY() << "\r\n"
+                << " Z: " << values.getZ() << hwlib::endl;
+}
+
+void MPU9250Interface::printAccelerationGravity() {
+    saveAccelerationValues();
+    Coordinate3D accelerationCalibrated = accelerationValues - accelerationCalibrateValues;
+    printAccelerationGravity(accelerationCalibrated);
+}
+
+void MPU9250Interface::printAccelerationGravity(Coordinate3D acceleration) {
+    int x = int((acceleration.getX() * 10000) / 16384);
+    int y = int((acceleration.getY() * 10000) / 16384);
+    int z = int((acceleration.getZ() * 10000) / 16384);
+    hwlib::cout << " X: " << x << "/m/s/10000\r\n"
+                << " Y: " << y << "/m/s/10000\r\n"
+                << " Z: " << z << "/m/s/10000\r\n";
 }
