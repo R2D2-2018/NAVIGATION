@@ -8,7 +8,7 @@
 #include "mpu9250_interface.hpp"
 #include "memory_map.hpp"
 
-MPU9250Interface::MPU9250Interface(hwlib::pin_oc &scl, hwlib::pin_oc &sda, const int8_t MPUAddr)
+MPU9250Interface::MPU9250Interface(hwlib::pin_oc &scl, hwlib::pin_oc &sda, const uint8_t MPUAddr)
     : scl(scl), sda(sda), MPUAddr(MPUAddr), i2c(hwlib::i2c_bus_bit_banged_scl_sda(scl, sda)) {
 
     hwlib::cout << hwlib::right << "Initializing MPU9250..." << hwlib::endl;
@@ -21,12 +21,6 @@ MPU9250Interface::MPU9250Interface(hwlib::pin_oc &scl, hwlib::pin_oc &sda, const
     i2c.write(MPUREG_I2C_SLV0_ADDR, magnReadFlag, 1); // Set the I2C slave addres of AK8963 and set for read.
     i2c.write(MPUREG_I2C_SLV0_REG, data, 1);          // I2C slave 0 register address from where to begin data transfe
     i2c.write(MPUREG_I2C_SLV0_CTRL, readData, 1);     // Read 6 bytes from the magnetometer
-
-    // TODO
-    //
-    // Write 0x02 to address 0x37 to enable I2C bypass to read magnetometer.
-    //
-    // END
 
     hwlib::wait_us(10000);
 
@@ -59,9 +53,9 @@ Coordinate3D MPU9250Interface::getAccelerationValues() {
 
     // ACCEL_XOUT_H | WITH ACCEL_XOUT_L. 16bit ADC, so divided into 2 bytes. First shift the first one 8 places (1 byte) to the
     // left. Because you receive bit 15 to 8 first. Then you "OR" it with the second byte. "OR", because these places are all o.
-    values.setX((((int16_t)data[0] << 8) | (int16_t)data[1]));
-    values.setY((((int16_t)data[2] << 8) | (int16_t)data[3]));
-    values.setZ((((int16_t)data[4] << 8) | (int16_t)data[5]));
+    values.setX(((static_cast<int16_t>(data[0] << 8)) | static_cast<int16_t>(data[1])));
+    values.setY(((static_cast<int16_t>(data[2] << 8)) | static_cast<int16_t>(data[3])));
+    values.setZ(((static_cast<int16_t>(data[4] << 8)) | static_cast<int16_t>(data[5])));
 
     return values;
 }
@@ -73,9 +67,9 @@ Coordinate3D MPU9250Interface::getGyroscopeValues() {
     i2c.write(MPUAddr, data, 1);
     i2c.read(MPUAddr, data, 6);
 
-    values.setX((((int16_t)data[0] << 8) | (int16_t)data[1]));
-    values.setY((((int16_t)data[2] << 8) | (int16_t)data[3]));
-    values.setZ((((int16_t)data[4] << 8) | (int16_t)data[5]));
+    values.setX(((static_cast<int16_t>(data[0] << 8)) | static_cast<int16_t>(data[1])));
+    values.setY(((static_cast<int16_t>(data[2] << 8)) | static_cast<int16_t>(data[3])));
+    values.setZ(((static_cast<int16_t>(data[4] << 8)) | static_cast<int16_t>(data[5])));
 
     return values;
 }
@@ -86,9 +80,9 @@ void MPU9250Interface::saveAccelerationValues() {
     i2c.write(MPUAddr, data, 1);
     i2c.read(MPUAddr, data, 6);
 
-    accelerationValues.setX((((int16_t)data[0] << 8) | (int16_t)data[1]));
-    accelerationValues.setY((((int16_t)data[2] << 8) | (int16_t)data[3]));
-    accelerationValues.setZ((((int16_t)data[4] << 8) | (int16_t)data[5]));
+    accelerationValues.setX(((static_cast<int16_t>(data[0] << 8)) | static_cast<int16_t>(data[1])));
+    accelerationValues.setY(((static_cast<int16_t>(data[2] << 8)) | static_cast<int16_t>(data[3])));
+    accelerationValues.setZ(((static_cast<int16_t>(data[4] << 8)) | static_cast<int16_t>(data[5])));
 }
 
 void MPU9250Interface::saveGyroscopeValues() {
@@ -97,9 +91,9 @@ void MPU9250Interface::saveGyroscopeValues() {
     i2c.write(MPUAddr, data, 1); // Write 1 byte to MPU
     i2c.read(MPUAddr, data, 12); // Read 12
 
-    gyroscopeValues.setX((((int16_t)data[6] << 8) | (int16_t)data[7]));
-    gyroscopeValues.setY((((int16_t)data[8] << 8) | (int16_t)data[9]));
-    gyroscopeValues.setZ((((int16_t)data[10] << 8) | (int16_t)data[11]));
+    gyroscopeValues.setX(((static_cast<int16_t>(data[6] << 8)) | static_cast<int16_t>(data[7])));
+    gyroscopeValues.setY(((static_cast<int16_t>(data[8] << 8)) | static_cast<int16_t>(data[9])));
+    gyroscopeValues.setZ(((static_cast<int16_t>(data[10] << 8)) | static_cast<int16_t>(data[11])));
 }
 
 Coordinate3D MPU9250Interface::getMagnetometerValues() {
@@ -113,12 +107,12 @@ Coordinate3D MPU9250Interface::getMagnetometerValues() {
         uint8_t c = data[6]; // end data read by reading ST2
 
         if (!(c & 0x08)) { // Check if magnetometer sensor overflow set, if not then report data
-            values.setX(((int16_t)data[1] << 8) | (int16_t)data[0]);
-            values.setY(((int16_t)data[3] << 8) | (int16_t)data[2]);
-            values.setZ(((int16_t)data[5] << 8) | (int16_t)data[4]);
-            magnetometerValues.setX(((int16_t)data[1] << 8) | (int16_t)data[0]);
-            magnetometerValues.setY(((int16_t)data[3] << 8) | (int16_t)data[2]);
-            magnetometerValues.setZ(((int16_t)data[5] << 8) | (int16_t)data[4]);
+            values.setX((static_cast<int16_t>(data[1] << 8)) | static_cast<int16_t>(data[0]));
+            values.setY((static_cast<int16_t>(data[3] << 8)) | static_cast<int16_t>(data[2]));
+            values.setZ((static_cast<int16_t>(data[5] << 8)) | static_cast<int16_t>(data[4]));
+            magnetometerValues.setX((static_cast<int16_t>(data[1] << 8)) | static_cast<int16_t>(data[0]));
+            magnetometerValues.setY((static_cast<int16_t>(data[3] << 8)) | static_cast<int16_t>(data[2]));
+            magnetometerValues.setZ((static_cast<int16_t>(data[5] << 8)) | static_cast<int16_t>(data[4]));
         }
     }
     return values;

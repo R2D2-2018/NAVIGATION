@@ -3,10 +3,6 @@
 #include "../src/navigation_path.hpp"
 #include "catch.hpp"
 
-TEST_CASE("Example Test Case") {
-    REQUIRE(10 == 10);
-}
-
 TEST_CASE("Coordinates 3D get coordinates positive") {
     Coordinate3D coordinates(140, 150, 130);
 
