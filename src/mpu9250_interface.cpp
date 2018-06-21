@@ -131,20 +131,21 @@ void MPU9250Interface::saveMagnetometerValues() {
     float magBias[3] = {0, 0, 0};
     float mRes = 10. * 4912. / 32760.0;
 
+    uint8_t startByte[1] = {AK8963_ST1};
+    uint8_t data[7] = {AK8963_XOUT_L}; // I2C slave 0 register address for AK8963 data
+
     magBias[0] = +470.; // User environmental x-axis correction in milliGauss, should be automatically calculated
     magBias[1] = +120.; // User environmental x-axis correction in milliGauss
     magBias[2] = +125.; // User environmental x-axis correction in milliGauss
 
-    uint8_t startByte[1] = {AK8963_ST1};
-    i2c.read(MPUAddr, startByte, 1);
-
     // must start your read from AK8963A register 0x03 and read seven bytes so that upon read of ST2 register 0x09 the AK8963A
     // will unlatch the data registers for the next measurement
 
-    uint8_t data[7] = {AK8963_XOUT_L}; // I2C slave 0 register address for AK8963 data
-
+    i2c.read(MPUAddr, startByte, 1);
+    hwlib::wait_ms(10);
     if (startByte[0] & 0x01) { // Startbyte
         i2c.read(MPUAddr, data, 7);
+        hwlib::wait_ms(10);
         uint8_t c = data[6];
         if (!(c & 0x08)) { // Check if magnetometer sensor overflow set, if not then report data
             rawX = ((int16_t)data[1] << 8) | data[0];
