@@ -16,7 +16,6 @@ set (sources
     src/navigation_engine.cpp
     src/navigation_path.cpp
     src/path.cpp
-    src/polar_vector2f.cpp
     src/vector2f.cpp
     src/wrap-hwlib.cpp
 
