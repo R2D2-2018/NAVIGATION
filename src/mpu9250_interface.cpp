@@ -1,15 +1,17 @@
 /**
  * @file
  * @brief     MPU9250Interface Class
- * @author    Renske Kuip
+ * @author    Renske Kuip and Jeroen van Hattem
  * @license   See LICENSE
  */
 
 #include "mpu9250_interface.hpp"
 #include "memory_map.hpp"
 
-void MPU9250Interface::init() {
-    hwlib::cout << "Initializing MPU9250..." << hwlib::endl;
+MPU9250Interface::MPU9250Interface(hwlib::pin_oc &scl, hwlib::pin_oc &sda, const uint8_t MPUAddr)
+    : scl(scl), sda(sda), MPUAddr(MPUAddr), i2c(hwlib::i2c_bus_bit_banged_scl_sda(scl, sda)) {
+
+    hwlib::cout << hwlib::right << "Initializing MPU9250..." << hwlib::endl;
 
     uint8_t data[7] = {0x03}; ///< I2C slave 0 register address for AK8963  data
     uint8_t magnReadFlag[1] = {0x0C | 0x80}, readData[1] = {0x87}, continious[1] = {0x06}, bypass[1] = {0x22};
@@ -25,62 +27,97 @@ void MPU9250Interface::init() {
     i2c.write(INT_PIN_CFG, bypass, 1); // set bypass mode
 }
 
-void MPU9250Interface::getAccel() {
+void MPU9250Interface::calibrate() {
+    accelerationCalibrateValues = getAccelerationValues();
+    gyroscopeCalibrateValues = getGyroscopeValues();
+    magnetometerCalibrateValues = getMagnetometerValues();
+}
+
+Coordinate3D MPU9250Interface::getAccelerationCalibrateValues() {
+    return accelerationCalibrateValues;
+}
+
+Coordinate3D MPU9250Interface::getGyroscopeCalibrateValues() {
+    return gyroscopeCalibrateValues;
+}
+
+Coordinate3D MPU9250Interface::getMagnetometerCalibrateValues() {
+    return magnetometerCalibrateValues;
+}
+
+Coordinate3D MPU9250Interface::getAccelerationValues() {
     uint8_t data[6] = {0x3B}; ///< address where MPU data starts
+    Coordinate3D values;
+    i2c.write(MPUAddr, data, 1);
+    i2c.read(MPUAddr, data, 6);
+
+    // ACCEL_XOUT_H | WITH ACCEL_XOUT_L. 16bit ADC, so divided into 2 bytes. First shift the first one 8 places (1 byte) to the
+    // left. Because you receive bit 15 to 8 first. Then you "OR" it with the second byte. "OR", because these places are all o.
+    values.setX(((static_cast<int16_t>(data[0] << 8)) | static_cast<int16_t>(data[1])));
+    values.setY(((static_cast<int16_t>(data[2] << 8)) | static_cast<int16_t>(data[3])));
+    values.setZ(((static_cast<int16_t>(data[4] << 8)) | static_cast<int16_t>(data[5])));
+
+    return values;
+}
+
+Coordinate3D MPU9250Interface::getGyroscopeValues() {
+    uint8_t data[6] = {0x43}; ///< address where MPU data starts
+    Coordinate3D values;
 
     i2c.write(MPUAddr, data, 1);
     i2c.read(MPUAddr, data, 6);
 
-    accelValue[0] = (((int16_t)data[0] << 8) | (int16_t)data[1]);
-    accelValue[1] = (((int16_t)data[2] << 8) | (int16_t)data[3]);
-    accelValue[2] = (((int16_t)data[4] << 8) | (int16_t)data[5]);
+    values.setX(((static_cast<int16_t>(data[0] << 8)) | static_cast<int16_t>(data[1])));
+    values.setY(((static_cast<int16_t>(data[2] << 8)) | static_cast<int16_t>(data[3])));
+    values.setZ(((static_cast<int16_t>(data[4] << 8)) | static_cast<int16_t>(data[5])));
 
-    printValuesX_Y_Z(accelValue);
+    return values;
 }
 
-void MPU9250Interface::getGyro() {
+void MPU9250Interface::saveAccelerationValues() {
+    uint8_t data[6] = {0x3B}; ///< address where MPU data starts (SHOULD BE 43)
+
+    i2c.write(MPUAddr, data, 1);
+    i2c.read(MPUAddr, data, 6);
+
+    accelerationValues.setX(((static_cast<int16_t>(data[0] << 8)) | static_cast<int16_t>(data[1])));
+    accelerationValues.setY(((static_cast<int16_t>(data[2] << 8)) | static_cast<int16_t>(data[3])));
+    accelerationValues.setZ(((static_cast<int16_t>(data[4] << 8)) | static_cast<int16_t>(data[5])));
+}
+
+void MPU9250Interface::saveGyroscopeValues() {
     uint8_t data[12] = {0x3B}; ///< address where MPU data starts
 
     i2c.write(MPUAddr, data, 1); // Write 1 byte to MPU
     i2c.read(MPUAddr, data, 12); // Read 12
 
-    gyroValue[0] = (((int16_t)data[6] << 8) | (int16_t)data[7]); // Convert uint8_t data (high and low) into int16_t
-    gyroValue[1] = (((int16_t)data[8] << 8) | (int16_t)data[9]);
-    gyroValue[2] = (((int16_t)data[10] << 8) | (int16_t)data[11]);
-
-    printValuesX_Y_Z(gyroValue);
+    gyroscopeValues.setX(((static_cast<int16_t>(data[6] << 8)) | static_cast<int16_t>(data[7])));
+    gyroscopeValues.setY(((static_cast<int16_t>(data[8] << 8)) | static_cast<int16_t>(data[9])));
+    gyroscopeValues.setZ(((static_cast<int16_t>(data[10] << 8)) | static_cast<int16_t>(data[11])));
 }
 
-void MPU9250Interface::getMagn() {
+Coordinate3D MPU9250Interface::getMagnetometerValues() {
     uint8_t data[7] = {0x03}; ///< I2C slave 0 register address for AK8963  data
+    Coordinate3D values;
 
-    while (magnValue[0] == 0 && magnValue[1] == 0 && magnValue[2] == 0) {
+    while (magnetometerValues.getX() == 0 && magnetometerValues.getY() == 0 && magnetometerValues.getZ() == 0) {
         i2c.read(MPUAddr, data, 7);
         // must start your read from AK8963A register 0x03 and read seven bytes so that upon read of ST2 register 0x09 the AK8963A
         // will unlatch the data registers for the next measurement
         uint8_t c = data[6]; // end data read by reading ST2
 
-        if (!(c & 0x08)) { // Check if magnetic sensor overflow set, if not then report data
-            magnValue[0] = ((int16_t)data[1] << 8) | (int16_t)data[0];
-            magnValue[1] = ((int16_t)data[3] << 8) | (int16_t)data[2];
-            magnValue[2] = ((int16_t)data[5] << 8) | (int16_t)data[4];
+        if (!(c & 0x08)) { // Check if magnetometer sensor overflow set, if not then report data
+            values.setX((static_cast<int16_t>(data[1] << 8)) | static_cast<int16_t>(data[0]));
+            values.setY((static_cast<int16_t>(data[3] << 8)) | static_cast<int16_t>(data[2]));
+            values.setZ((static_cast<int16_t>(data[5] << 8)) | static_cast<int16_t>(data[4]));
+            magnetometerValues.setX((static_cast<int16_t>(data[1] << 8)) | static_cast<int16_t>(data[0]));
+            magnetometerValues.setY((static_cast<int16_t>(data[3] << 8)) | static_cast<int16_t>(data[2]));
+            magnetometerValues.setZ((static_cast<int16_t>(data[5] << 8)) | static_cast<int16_t>(data[4]));
         }
     }
-    printValuesX_Y_Z(magnValue);
+    return values;
 }
 
-void MPU9250Interface::printValuesX_Y_Z(int16_t temp[3]) {
-    hwlib::cout << "X: " << temp[0] << " Y: " << temp[1] << " Z: " << temp[2] << hwlib::endl;
-}
-
-void MPU9250Interface::printValuesX_Y_Z(int32_t temp[3]) {
-    hwlib::cout << "X: " << temp[0] << " Y: " << temp[1] << " Z: " << temp[2] << hwlib::endl;
-}
-
-void MPU9250Interface::debug() {
-    for (;;) {
-        getAccel();
-        getGyro();
-        getMagn();
-    }
+void MPU9250Interface::printValuesX_Y_Z(Coordinate3D values) {
+    hwlib::cout << hwlib::right << "X: " << values.getX() << " Y: " << values.getY() << " Z: " << values.getZ() << hwlib::endl;
 }

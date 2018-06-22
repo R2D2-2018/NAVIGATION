@@ -1,74 +1,122 @@
 /**
  * @file
  * @brief     MPU9250Interface Class
- * @author    Quinten Perquin
+ * @author    Quinten Perquin and Jeroen van Hattem
  * @license   See LICENSE
  */
+
+// REGISTER MAP: https://cdn.sparkfun.com/assets/learn_tutorials/5/5/0/MPU-9250-Register-Map.pdf
+// COMPASS: https://devzone.nordicsemi.com/f/nordic-q-a/28414/read-mpu-9250-magnetometer/112145#112145
 
 #ifndef MPU9250_INTERFACE_HPP
 #define MPU9250_INTERFACE_HPP
 
+#include "coordinate3d.hpp"
 #include "wrap-hwlib.hpp"
 
 class MPU9250Interface {
+  private:
+    hwlib::pin_oc &scl;
+    hwlib::pin_oc &sda;
+    const uint8_t MPUAddr;
+    hwlib::i2c_bus_bit_banged_scl_sda i2c;
+
+    Coordinate3D accelerationCalibrateValues;
+    Coordinate3D gyroscopeCalibrateValues;
+    Coordinate3D magnetometerCalibrateValues;
+
+    Coordinate3D accelerationValues;
+    Coordinate3D gyroscopeValues;
+    Coordinate3D magnetometerValues;
+
   public:
-    MPU9250Interface(hwlib::pin_oc &scl, hwlib::pin_oc &sda, const int8_t MPUAddr)
-        : scl(scl), sda(sda), MPUAddr(MPUAddr), i2c(hwlib::i2c_bus_bit_banged_scl_sda(scl, sda)) {
-    }
+    MPU9250Interface(hwlib::pin_oc &scl, hwlib::pin_oc &sda, const uint8_t MPUAddr);
 
     /**
-     * @brief Initializes MPU object
+     * @brief Calibrate the sensor
      *
-     * Function to inizialize the i2c bus for the MPU
-     * and reading/printing values from the MPU
+     * Calibrate the sensor by saving the initial values. So it sets a zero.
      *
      */
-    void init();
+    void calibrate();
+
+    /**
+     * @brief Get the calibrated Coordinate3D value for the acceleration
+     *
+     * Returns values as Coordinate3D {x,y,z}
+     *
+     * @return Coordinate3D acceleration calibrated values
+     */
+    Coordinate3D getAccelerationCalibrateValues();
+
+    /**
+     * @brief Get the calibrated Coordinate3D value for the gyroscope
+     *
+     * Returns values as Coordinate3D {x,y,z}
+     *
+     * @return Coordinate3D gyroscope calibrated values
+     */
+    Coordinate3D getGyroscopeCalibrateValues();
+
+    /**
+     * @brief Get the calibrated Coordinate3D for the Magnetometer sensor
+     *
+     * Returns values as Coordinate3D {x,y,z}
+     *
+     * @return Coordinate3D Magnetometer calibrated values
+     */
+    Coordinate3D getMagnetometerCalibrateValues();
 
     /**
      * @brief Get the Accelerator values
      *
+     * Returns values as Coordinate3D {x,y,z}
+     *
+     * @return Coordinate3D Gyroscope values
      */
-    void getAccel();
+    Coordinate3D getAccelerationValues();
+
     /**
      * @brief Get the Gyroscope values
      *
+     * Returns values as Coordinate3D {x,y,z}
+     *
+     * @return Coordinate3D Gyroscope values
      */
-    void getGyro();
+    Coordinate3D getGyroscopeValues();
+
+    /**
+     * @brief Get the Accelerator values
+     *
+     * Returns values as Coordinate3D {x,y,z}
+     *
+     * @return Coordinate3D Gyroscope values
+     */
+    void saveAccelerationValues();
+
+    /**
+     * @brief Get the Gyroscope values
+     *
+     * Returns values as Coordinate3D {x,y,z}
+     *
+     * @return Coordinate3D Gyroscope values
+     */
+    void saveGyroscopeValues();
+
     /**
      * @brief Get the Magnetometer values
      *
-     */
-    void getMagn();
-
-    /**
-     * @brief Prints values of the given int16_t array in the format "X:% Y:% Z:%"
+     * Returns values as Coordinate3D {x,y,z}
      *
-     * @param temp int16_t array with 3 values
+     * @return Coordinate3D Magnetometer values
      */
-    void printValuesX_Y_Z(int16_t temp[3]);
+    Coordinate3D getMagnetometerValues();
     /**
-     * @brief Prints values of the given int32_t array in the format "X:% Y:% Z:%"
+     * @brief Prints values of the given Coordinate3D object in the format "X:% Y:% Z:%"
      *
-     * @param temp int32_t array with 3 values
+     * @param Coordinate3D object
      */
-    void printValuesX_Y_Z(int32_t temp[3]);
-
-    /**
-     * @brief Function to print the MPU9250 data for debug purposes
-     *
-     */
-    void debug();
-
-  private:
-    hwlib::pin_oc &scl;
-    hwlib::pin_oc &sda;
-    const int8_t MPUAddr;
-    hwlib::i2c_bus_bit_banged_scl_sda i2c;
-
-    int16_t accelValue[3] = {0, 0, 0};
-    int16_t gyroValue[3] = {0, 0, 0};
-    int16_t magnValue[3] = {0, 0, 0};
+    void printValuesX_Y_Z(Coordinate3D values);
 };
 
-#endif
+#endif // COORDINATE3D_HPP
