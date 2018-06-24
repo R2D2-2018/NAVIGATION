@@ -11,8 +11,6 @@
 MPU9250Interface::MPU9250Interface(hwlib::pin_oc &scl, hwlib::pin_oc &sda, const uint8_t MPUAddr)
     : scl(scl), sda(sda), MPUAddr(MPUAddr), i2c(hwlib::i2c_bus_bit_banged_scl_sda(scl, sda)) {
 
-    hwlib::cout << hwlib::right << "Initializing MPU9250..." << hwlib::endl;
-
     uint8_t data[7] = {0x03}; ///< I2C slave 0 register address for AK8963  data
     uint8_t magnReadFlag[1] = {0x0C | 0x80}, readData[1] = {0x87}, continious[1] = {0x06}, bypass[1] = {0x22};
     /// All the I2C data addresses are pointers, because HWLIB only accepts them as such
@@ -22,19 +20,12 @@ MPU9250Interface::MPU9250Interface(hwlib::pin_oc &scl, hwlib::pin_oc &sda, const
     i2c.write(MPUREG_I2C_SLV0_REG, data, 1);          // I2C slave 0 register address from where to begin data transfe
     i2c.write(MPUREG_I2C_SLV0_CTRL, readData, 1);     // Read 6 bytes from the magnetometer
 
-    // TODO
-    //
-    // Write 0x02 to address 0x37 to enable I2C bypass to read magnetometer.
-    //
-    // END
-
     hwlib::wait_us(10000);
 
     i2c.write(INT_PIN_CFG, bypass, 1); // set bypass mode
 }
 
 void MPU9250Interface::calibrate() {
-    hwlib::cout << "Calibrating the Acceleration, gyro and magnetsensor" << hwlib::endl;
     for (int i = 0; i < 10; i++) {
         accelerationCalibrateValues = (accelerationCalibrateValues / 2) + (getAccelerationValues() / 2);
         gyroscopeCalibrateValues = (gyroscopeCalibrateValues / 2) + (getGyroscopeValues() / 2);

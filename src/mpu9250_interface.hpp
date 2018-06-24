@@ -21,8 +21,11 @@ class MPU9250Interface {
     const int8_t MPUAddr;
     hwlib::i2c_bus_bit_banged_scl_sda i2c;
 
-    float gyroRes = 250.0f / 32768.0f;
-    float accelRes = 2.0f / 32768.0f;
+    float gyroRes =
+        250.0f / 32768.0f; // The default resolution for the gyroscope is 250 Degree/s. For precise calculations a float is needed.
+    float accelRes =
+        2.0f / 32768.0f; // The default resolution for the accelerator is 2G(2*9.81m/s/s) and with an total size
+                         // 32768(2 Bytes) the resolution for 1G is 16384. The float is needed for the precise calculations.
 
     Coordinate3D accelerationCalibrateValues;
     Coordinate3D gyroscopeCalibrateValues;

@@ -9,7 +9,6 @@ int main() {
     auto scl = hwlib::target::pin_oc(hwlib::target::pins::scl);
     auto sda = hwlib::target::pin_oc(hwlib::target::pins::sda);
     const int8_t address = 0x68;
-    // auto x, y, z;
 
     NavigationEngine engine;
     IOInterface interface(engine);
@@ -22,10 +21,6 @@ int main() {
 
         hwlib::cout << "Gyroscope: \r\n";
         sensor.printGyroscopeDegreeSec();
-
-        // hwlib::cout << "Magnetometer: \r\n"
-        //             << sensor.getMagnetometerValues().getX() << "|" << sensor.getMagnetometerValues().getY() << "|"
-        //             << sensor.getMagnetometerValues().getZ() << "\r\n";
 
         hwlib::cout << "\r\n";
         hwlib::wait_ms(1000);
