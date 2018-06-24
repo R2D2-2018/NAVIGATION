@@ -18,7 +18,7 @@ class MPU9250Interface {
   private:
     hwlib::pin_oc &scl;
     hwlib::pin_oc &sda;
-    const int8_t MPUAddr;
+    const uint8_t MPUAddr;
     hwlib::i2c_bus_bit_banged_scl_sda i2c;
 
     float gyroRes =
