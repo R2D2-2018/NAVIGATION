@@ -89,6 +89,92 @@ struct Coordinate3D {
      * @return int16_t
      */
     int16_t getZ();
+
+    /**
+     * @brief coordinate3D += operator
+     *
+     * Returns a coordinate3D after adding another coordinate3D to it.
+     *
+     * @param rhs : const Coordinate3D &
+     *
+     * @return Coordinate3D
+     */
+    Coordinate3D &operator+=(const Coordinate3D &rhs);
+
+    /**
+     * @brief coordinate3D -= operator
+     *
+     * Returns a coordinate3D after subtracting another coordinate3D to it.
+     *
+     * @param rhs : const Coordinate3D &
+     *
+     * @return Coordinate3D
+     */
+    Coordinate3D &operator-=(const Coordinate3D &rhs);
+
+    /**
+     * @brief Coordinate3D *= operator
+     *
+     * Returns a coordinate3D after multiplying it with an intiger.
+     *
+     * @param multiplier : const int
+     *
+     * @return Coordinate3D
+     */
+    Coordinate3D &operator*=(const int multiplier);
+
+    /**
+     * @brief Coordinate3D /= operator
+     *
+     * Returns a coordinate3D after dividing it with an intiger.
+     *
+     * @param divider : const int
+     *
+     * @return Coordinate3D
+     */
+    Coordinate3D &operator/=(const int divider);
+
+    /**
+     * @brief coordinate3D + operator
+     *
+     * Returns a coordinate3D after adding another coordinate3D to it.
+     *
+     * @param rhs : const Coordinate3D &
+     *
+     * @return Coordinate3D
+     */
+    Coordinate3D operator+(const Coordinate3D &rhs) const;
+
+    /**
+     * @brief coordinate3D - operator
+     *
+     * Returns a coordinate3D after subtracting another coordinate3D to it.
+     *
+     * @param rhs : const Coordinate3D &
+     *
+     * @return Coordinate3D
+     */
+    Coordinate3D operator-(const Coordinate3D &rhs) const;
+    /**
+     * @brief Coordinate3D / operator
+     *
+     * Returns a coordinate3D after dividing it with an intiger.
+     *
+     * @param divider : const int
+     *
+     * @return Coordinate3D
+     */
+    Coordinate3D operator/(const int divider) const;
+    /**
+     * @brief Coordinate3D * operator
+     *
+     * Returns a coordinate3D after multiplying it with an intiger.
+     *
+     * @param multiplier : const int
+     *
+     * @return Coordinate3D
+     */
+    Coordinate3D operator*(const int multiplier) const;
 };
 
 #endif // COORDINATE3D_HPP
