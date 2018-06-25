@@ -14,7 +14,8 @@ class PolarVector2f {
      *
      * @return a Vector2f object
      */
-    PolarVector2f();
+    PolarVector2f() {
+    }
 
     /**
      * @brief creates a Vector2f object
