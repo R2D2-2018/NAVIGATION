@@ -17,10 +17,14 @@ MPU9250Interface::MPU9250Interface(hwlib::pin_oc &scl, hwlib::pin_oc &sda, const
     uint8_t magnReadFlag[1] = {0x0C | 0x80}, readData[1] = {0x87}, continious[1] = {0x06}, bypass[1] = {0x22};
     /// All the I2C data addresses are pointers, because HWLIB only accepts them as such
 
-    i2c.write(AK8963_CNTL1, continious, 1);           // start continious mode AK8963
+    i2c.write(AK8963_CNTL1, continious, 1); // start continious mode AK8963
+    hwlib::wait_ms(10);
     i2c.write(MPUREG_I2C_SLV0_ADDR, magnReadFlag, 1); // Set the I2C slave addres of AK8963 and set for read.
-    i2c.write(MPUREG_I2C_SLV0_REG, data, 1);          // I2C slave 0 register address from where to begin data transfe
-    i2c.write(MPUREG_I2C_SLV0_CTRL, readData, 1);     // Read 6 bytes from the magnetometer
+    hwlib::wait_ms(10);
+    i2c.write(MPUREG_I2C_SLV0_REG, data, 1); // I2C slave 0 register address from where to begin data transfe
+    hwlib::wait_ms(10);
+    i2c.write(MPUREG_I2C_SLV0_CTRL, readData, 1); // Read 6 bytes from the magnetometer
+    hwlib::wait_ms(10);
 
     // TODO
     //
@@ -28,37 +32,56 @@ MPU9250Interface::MPU9250Interface(hwlib::pin_oc &scl, hwlib::pin_oc &sda, const
     //
     // END
 
+    i2c.write(MPUAddr, (uint8_t *)INT_PIN_CFG, 0x22); // set bypass mode
+    hwlib::wait_ms(10);
+    i2c.write(MPUAddr, (uint8_t *)INT_ENABLE, 0x01);
+
     initializeAK8963(&magnetometerCalibrateValues);
 
     hwlib::wait_ms(10);
-
     hwlib::wait_us(10000);
-
-    i2c.write(INT_PIN_CFG, bypass, 1); // set bypass mode
 }
 
 void MPU9250Interface::initializeAK8963(Coordinate3D<float> *destination) {
-    // First extract the factory calibration for each magnetometer axis
-    uint8_t rawData[3] = {AK8963_CNTL};       // x/y/z gyro calibration data stored here
-    i2c.write(AK8963_ADDRESS, rawData, 0x00); // Power down magnetometer
+    uint8_t rawData[3] = {AK8963_ASAX};
+    uint8_t address[1] = {AK8963_CNTL};
+    i2c.write(MPUAddr, address, 0x00);
     hwlib::wait_ms(10);
-    i2c.write(AK8963_ADDRESS, rawData, 0x0F); // Enter Fuse ROM access mode
+    i2c.write(MPUAddr, address, 0x0F);
     hwlib::wait_ms(10);
-    rawData[0] = {AK8963_ASAX};
-    i2c.read(AK8963_ADDRESS, rawData, 3);                       // Read the x-, y-, and z - axis calibration values
-    destination->setX((float)((rawData[0] - 128) / 256. + 1.)); // Return x-axis sensitivity adjustment values, etc.
-    destination->setY((float)((rawData[1] - 128) / 256. + 1.));
-    destination->setZ((float)((rawData[2] - 128) / 256. + 1.));
-    rawData[0] = {AK8963_CNTL};
-    i2c.write(AK8963_ADDRESS, rawData, 0x00); // Power down magnetometer
+    i2c.read(AK8963_ADDRESS, rawData, 3);
+
+    magCalibration[0] = (float)(rawData[0] - 128) / 256.0f + 1.0f; // Return x-axis sensitivity adjustment values, etc.
+    magCalibration[1] = (float)(rawData[1] - 128) / 256.0f + 1.0f;
+    magCalibration[2] = (float)(rawData[2] - 128) / 256.0f + 1.0f;
+    _Mmode = Mmode;
+    i2c.write(MPUAddr, address, 0x00);
     hwlib::wait_ms(10);
-    // Configure the magnetometer for continuous read and highest resolution
-    // set Mscale bit 4 to 1 (0) to enable 16 (14) bit resolution in CNTL
-    // register,
-    // and enable continuous mode data acquisition Mmode (bits [3:0]), 0010 for
-    // 8 Hz and 0110 for 100 Hz sample rates
-    rawData[0] = {AK8963_CNTL};
-    i2c.write(AK8963_ADDRESS, rawData, 0x10); // Set magnetometer data resolution and sample ODR delay(10);
+    i2c.write(AK8963_ADDRESS, address, Mscale << 4 | Mmode); // Set magnetometer data resolution and sample ODR
+    hwlib::wait_ms(10);
+
+    // ------
+    // // First extract the factory calibration for each magnetometer axis
+    // uint8_t rawData[3] = {AK8963_CNTL};       // x/y/z gyro calibration data stored here
+    // i2c.write(AK8963_ADDRESS, rawData, 0x00); // Power down magnetometer
+    // hwlib::wait_ms(10);
+    // i2c.write(AK8963_ADDRESS, rawData, 0x0F); // Enter Fuse ROM access mode
+    // hwlib::wait_ms(10);
+    // rawData[0] = {AK8963_ASAX};
+    // i2c.read(AK8963_ADDRESS, rawData, 3);                       // Read the x-, y-, and z - axis calibration values
+    // destination->setX((float)((rawData[0] - 128) / 256. + 1.)); // Return x-axis sensitivity adjustment values, etc.
+    // destination->setY((float)((rawData[1] - 128) / 256. + 1.));
+    // destination->setZ((float)((rawData[2] - 128) / 256. + 1.));
+    // rawData[0] = {AK8963_CNTL};
+    // i2c.write(AK8963_ADDRESS, rawData, 0x00); // Power down magnetometer
+    // hwlib::wait_ms(10);
+    // // Configure the magnetometer for continuous read and highest resolution
+    // // set Mscale bit 4 to 1 (0) to enable 16 (14) bit resolution in CNTL
+    // // register,
+    // // and enable continuous mode data acquisition Mmode (bits [3:0]), 0010 for
+    // // 8 Hz and 0110 for 100 Hz sample rates
+    // rawData[0] = {AK8963_CNTL};
+    // i2c.write(AK8963_ADDRESS, rawData, 0x10); // Set magnetometer data resolution and sample ODR delay(10);
 }
 
 void MPU9250Interface::calibrate() {
@@ -154,9 +177,9 @@ void MPU9250Interface::saveMagnetometerValues() {
         }
     }
 
-    float correctedX = rawX; // * mRes * magCalibration[0] - magBias[0];
-    float correctedY = rawY; // * mRes * magCalibration[1] - magBias[1];
-    float correctedZ = rawZ; // * mRes * magCalibration[2] - magBias[2];
+    float correctedX = rawX * mRes * magCalibration[0] - magBias[0];
+    float correctedY = rawY * mRes * magCalibration[1] - magBias[1];
+    float correctedZ = rawZ * mRes * magCalibration[2] - magBias[2];
 
     magnetometerValues.setX(correctedX);
     magnetometerValues.setY(correctedY);
@@ -192,4 +215,31 @@ Coordinate3D<float> MPU9250Interface::getMagnetometerCalibrateValues() {
 
 void MPU9250Interface::printValuesX_Y_Z(Coordinate3D<float> values) {
     // hwlib::cout << hwlib::right << "X: " << values.getX() << " Y: " << values.getY() << " Z: " << values.getZ() << hwlib::endl;
+}
+
+float MPU9250Interface::getMres(uint8_t Mscale) {
+    switch (Mscale) {
+        // Possible magnetometer scales (and their register bit settings) are:
+        // 14 bit resolution (0) and 16 bit resolution (1)
+    case MFS_14BITS:
+        _mRes = 10. * 4912. / 8190.; // Proper scale to return milliGauss
+        return _mRes;
+        break;
+    case MFS_16BITS:
+        _mRes = 10. * 4912. / 32760.0; // Proper scale to return milliGauss
+        return _mRes;
+        break;
+    default:
+        _mRes = 10. * 4912. / 32760.0;
+        return _mRes;
+        break;
+    }
+}
+
+bool MPU9250Interface::checkNewMagData() {
+    bool test;
+    uint8_t address[1] = {AK8963_ST1};
+    i2c.read(AK8963_ADDRESS, address, 1);
+    test = address[0] & 0x01;
+    return test;
 }

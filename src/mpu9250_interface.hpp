@@ -15,17 +15,40 @@
 #include "coordinate3d.hpp"
 #include "wrap-hwlib.hpp"
 
+// Set initial input parameters
+enum Ascale { AFS_2G = 0, AFS_4G, AFS_8G, AFS_16G };
+
+enum Gscale { GFS_250DPS = 0, GFS_500DPS, GFS_1000DPS, GFS_2000DPS };
+enum Mscale {
+    MFS_14BITS = 0, // 0.6 mG per LSB
+    MFS_16BITS      // 0.15 mG per LSB
+};
+
 class MPU9250Interface {
   private:
     hwlib::pin_oc &scl;
     hwlib::pin_oc &sda;
     const int8_t MPUAddr;
 
+    float aRes, gRes; // scale resolutions per LSB for the sensors
+
+    float _aRes;
+    float _gRes;
+    float _mRes;
+    uint8_t _Mmode;
+
+    // Specify sensor full scale
+    uint8_t Gscale = GFS_250DPS;
+    uint8_t Ascale = AFS_2G;
+    uint8_t Mscale = MFS_16BITS; // Choose either 14-bit or 16-bit magnetometer resolution
+    // uint8_t Mmode = 0x02;        // 2 for 8 Hz, 6 for 100 Hz continuous magnetometer data read
+
     float M_PI = 3.14159265358979323846;
     float mRes = 10. * 4912. / 32760.0;
     float pitch; // Gyroscope rotation over the lateral axis (X)
     float yaw;   // Gyroscope rotation over the vertical axis (Y)
     float roll;  // Gyroscope rotation over the longitudinal axis (Z)
+    float magCalibration[3] = {0, 0, 0};
 
     // uint8_t Mscale = MFS_16BITS; // Choose either 14-bit or 16-bit magnetometer resolution
     uint8_t Mmode = 0x06;
@@ -139,6 +162,10 @@ class MPU9250Interface {
      * @param Coordinate3D object
      */
     void printValuesX_Y_Z(Coordinate3D<float> values);
+
+    float getMres(uint8_t Mscale);
+
+    bool checkNewMagData();
 };
 
 #endif // COORDINATE3D_HPP
