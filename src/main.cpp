@@ -25,15 +25,16 @@ int main() {
         goTo = path.getDirections(Vector2f(2, 4), Vector2f(4, 8));
         goToAngle = goTo.getAngle();
         goToDistance = goTo.getDistance();
-        // hwlib::cout << "Gyroscope: \r\n";
-        // hwlib::cout << sensor.getGyroscopeValues().getX() << "|" << sensor.getGyroscopeValues().getY() << "|"
-        //             << sensor.getGyroscopeValues().getZ() << "\r\n";
-        // hwlib::cout << "Accelerator: \r\n";
-        // hwlib::cout << (int)sensor.getAccelerationValues().getX() << "|" << (int)sensor.getAccelerationValues().getY() << "|"
-        //             << (int)sensor.getAccelerationValues().getZ() << "\r\n";
-        // hwlib::cout << "Magnetometer: \r\n";
-        // hwlib::cout << (int)sensor.getMagnetometerValues().getX() << " | " << (int)sensor.getMagnetometerValues().getY() << " | "
-        //             << (int)sensor.getMagnetometerValues().getZ() << " | ";
+
+        hwlib::cout << "Gyroscope: \r\n";
+        hwlib::cout << (int)sensor.getGyroscopeValues().getX() << "|" << (int)sensor.getGyroscopeValues().getY() << "|"
+                    << (int)sensor.getGyroscopeValues().getZ() << "\r\n";
+        hwlib::cout << "Accelerator: \r\n";
+        hwlib::cout << (int)sensor.getAccelerationValues().getX() << "|" << (int)sensor.getAccelerationValues().getY() << "|"
+                    << (int)sensor.getAccelerationValues().getZ() << "\r\n";
+        hwlib::cout << "Magnetometer: \r\n";
+        hwlib::cout << (int)sensor.getMagnetometerValues().getX() << " | " << (int)sensor.getMagnetometerValues().getY() << " | "
+                    << (int)sensor.getMagnetometerValues().getZ() << " | ";
 
         hwlib::cout << "Directions: \r\n";
         hwlib::cout << "Angle : " << (int)(goToAngle) << "." << (int)((goToAngle - (int)(goToAngle)) * 1000) << "\r\n";
