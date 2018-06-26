@@ -59,29 +59,6 @@ void MPU9250Interface::initializeAK8963(Coordinate3D<float> *destination) {
     hwlib::wait_ms(10);
     i2c.write(AK8963_ADDRESS, address, Mscale << 4 | Mmode); // Set magnetometer data resolution and sample ODR
     hwlib::wait_ms(10);
-
-    // ------
-    // // First extract the factory calibration for each magnetometer axis
-    // uint8_t rawData[3] = {AK8963_CNTL};       // x/y/z gyro calibration data stored here
-    // i2c.write(AK8963_ADDRESS, rawData, 0x00); // Power down magnetometer
-    // hwlib::wait_ms(10);
-    // i2c.write(AK8963_ADDRESS, rawData, 0x0F); // Enter Fuse ROM access mode
-    // hwlib::wait_ms(10);
-    // rawData[0] = {AK8963_ASAX};
-    // i2c.read(AK8963_ADDRESS, rawData, 3);                       // Read the x-, y-, and z - axis calibration values
-    // destination->setX((float)((rawData[0] - 128) / 256. + 1.)); // Return x-axis sensitivity adjustment values, etc.
-    // destination->setY((float)((rawData[1] - 128) / 256. + 1.));
-    // destination->setZ((float)((rawData[2] - 128) / 256. + 1.));
-    // rawData[0] = {AK8963_CNTL};
-    // i2c.write(AK8963_ADDRESS, rawData, 0x00); // Power down magnetometer
-    // hwlib::wait_ms(10);
-    // // Configure the magnetometer for continuous read and highest resolution
-    // // set Mscale bit 4 to 1 (0) to enable 16 (14) bit resolution in CNTL
-    // // register,
-    // // and enable continuous mode data acquisition Mmode (bits [3:0]), 0010 for
-    // // 8 Hz and 0110 for 100 Hz sample rates
-    // rawData[0] = {AK8963_CNTL};
-    // i2c.write(AK8963_ADDRESS, rawData, 0x10); // Set magnetometer data resolution and sample ODR delay(10);
 }
 
 void MPU9250Interface::calibrate() {
@@ -96,8 +73,8 @@ void MPU9250Interface::saveAccelerationValues() {
     i2c.write(MPUAddr, data, 1);
     i2c.read(MPUAddr, data, 6);
 
-    // ACCEL_XOUT_H | WITH ACCEL_XOUT_L. 16bit ADC, so divided into 2 bytes. First shift the first one 8 places (1 byte) to the
-    // left. Because you receive bit 15 to 8 first. Then you "OR" it with the second byte. "OR", because these places are all o.
+    /// ACCEL_XOUT_H | WITH ACCEL_XOUT_L. 16bit ADC, so divided into 2 bytes. First shift the first one 8 places (1 byte) to the
+    /// left. Because you receive bit 15 to 8 first. Then you "OR" it with the second byte. "OR", because these places are all o.
 
     accelerationValues.setX(((data[0] << 8) | data[1]) / 16384);
     accelerationValues.setY(((data[2] << 8) | data[3]) / 16384);
@@ -110,25 +87,25 @@ void MPU9250Interface::saveGyroscopeValues() {
     i2c.write(MPUAddr, data, 1); // Write 1 byte to MPU
     i2c.read(MPUAddr, data, 6);  // Read 6
 
-    // float q[4] = {1.0f, 0.0f, 0.0f, 0.0f};
-    // float pitch; // Gyroscope rotation over the lateral axis (X)
-    // float yaw;   // Gyroscope rotation over the vertical axis (Y)
-    // float roll;  // Gyroscope rotation over the longitudinal axis (Z)
+    float q[4] = {1.0f, 0.0f, 0.0f, 0.0f};
+    float pitch; // Gyroscope rotation over the lateral axis (X)
+    float yaw;   // Gyroscope rotation over the vertical axis (Y)
+    float roll;  // Gyroscope rotation over the longitudinal axis (Z)
     float gRes = 250.0 / 32768.0;
 
     i2c.write(MPUAddr, data, 1);
     i2c.read(MPUAddr, data, 6);
 
-    // yaw = atan2(2.0f * (q[1] * q[2] + q[0] * q[3]), q[0] * q[0] + q[1] * q[1] - q[2] * q[2] - q[3] * q[3]);
-    // pitch = -asin(2.0f * (q[1] * q[3] - q[0] * q[2]));
-    // roll = atan2(2.0f * (q[0] * q[1] + q[2] * q[3]), q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3]);
-    // pitch *= 180.0f / M_PI;
-    // yaw *= 180.0f / M_PI;
-    // yaw -= 13.8; // Declination at Danville, California is 13 degrees 48 minutes and 47 seconds on 2014-04-04
-    // roll *= 180.0f / M_PI;
+    yaw = atan2(2.0f * (q[1] * q[2] + q[0] * q[3]), q[0] * q[0] + q[1] * q[1] - q[2] * q[2] - q[3] * q[3]);
+    pitch = -asin(2.0f * (q[1] * q[3] - q[0] * q[2]));
+    roll = atan2(2.0f * (q[0] * q[1] + q[2] * q[3]), q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3]);
+    pitch *= 180.0f / M_PI;
+    yaw *= 180.0f / M_PI;
+    yaw -= 13.8; // Declination at Danville, California is 13 degrees 48 minutes and 47 seconds on 2014-04-04
+    roll *= 180.0f / M_PI;
 
-    // ACCEL_XOUT_H | WITH ACCEL_XOUT_L. 16bit ADC, so divided into 2 bytes. First shift the first one 8 places (1 byte) to the
-    // left. Because you receive bit 15 to 8 first. Then you "OR" it with the second byte. "OR", because these places are all o.
+    /// ACCEL_XOUT_H | WITH ACCEL_XOUT_L. 16bit ADC, so divided into 2 bytes. First shift the first one 8 places (1 byte) to the
+    /// left. Because you receive bit 15 to 8 first. Then you "OR" it with the second byte. "OR", because these places are all o.
     float x = ((data[0] << 8) | data[1]);
     float y = ((data[2] << 8) | data[3]);
     float z = ((data[4] << 8) | data[5]);
@@ -140,9 +117,6 @@ void MPU9250Interface::saveGyroscopeValues() {
     gyroscopeValues.setX(realValueX);
     gyroscopeValues.setY(realValueY);
     gyroscopeValues.setZ(realValueZ);
-    // gyroscopeValues.setX(x);
-    // gyroscopeValues.setY(y);
-    // gyroscopeValues.setZ(z);
 }
 
 void MPU9250Interface::saveMagnetometerValues() {
