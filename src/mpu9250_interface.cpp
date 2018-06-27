@@ -121,8 +121,8 @@ Coordinate3D MPU9250Interface::getMagnetometerValues() {
 }
 
 void MPU9250Interface::printValuesX_Y_Z(Coordinate3D values) {
-    hwlib::cout << " X: " << values.getX() << "\r\n"
-                << " Y: " << values.getY() << "\r\n"
+    hwlib::cout << " X: " << values.getX() << "\n"
+                << " Y: " << values.getY() << "\n"
                 << " Z: " << values.getZ() << hwlib::endl;
 }
 
@@ -136,9 +136,9 @@ void MPU9250Interface::printAccelerationGravity(Coordinate3D acceleration) {
     int x = static_cast<int>((acceleration.getX() * 100) * accelRes);
     int y = static_cast<int>((acceleration.getY() * 100) * accelRes);
     int z = static_cast<int>((acceleration.getZ() * 100) * accelRes);
-    hwlib::cout << " X: " << x << "/m/s/100\r\n"
-                << " Y: " << y << "/m/s/100\r\n"
-                << " Z: " << z << "/m/s/100\r\n";
+    hwlib::cout << " X: " << x << "/m/s/100\n"
+                << " Y: " << y << "/m/s/100\n"
+                << " Z: " << z << "/m/s/100\n";
 }
 
 void MPU9250Interface::printGyroscopeDegreeSec() {
@@ -151,7 +151,7 @@ void MPU9250Interface::printGyroscopeDegreeSec(Coordinate3D gyroscope) {
     int x = static_cast<int>(gyroscope.getX() * gyroRes);
     int y = static_cast<int>(gyroscope.getY() * gyroRes);
     int z = static_cast<int>(gyroscope.getZ() * gyroRes);
-    hwlib::cout << " X: " << x << "/degree/s\r\n"
-                << " Y: " << y << "/degree/s\r\n"
-                << " Z: " << z << "/degree/s\r\n";
+    hwlib::cout << " X: " << x << "/degree/s\n"
+                << " Y: " << y << "/degree/s\n"
+                << " Z: " << z << "/degree/s\n";
 }
