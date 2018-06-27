@@ -42,7 +42,6 @@ class MPU9250Interface {
      * @brief Calibrate the sensor
      *
      * Calibrate the sensor by saving the initial values. So it sets a zero.
-     *
      */
     void calibrate();
 

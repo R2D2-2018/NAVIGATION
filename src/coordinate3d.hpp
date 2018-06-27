@@ -20,7 +20,6 @@ struct Coordinate3D {
      * @brief Construct a new Coordinate3D object
      *
      * The default constructor to create a new Coordinate3D object.
-     *
      */
     Coordinate3D();
 
@@ -28,11 +27,9 @@ struct Coordinate3D {
      * @brief Construct a new Coordinate3D object
      *
      * The default constructor to create a new Coordinate3D object.
-     *
      * @param x : int16_t
      * @param y : int16_t
      * @param z : int16_t
-     *
      */
     Coordinate3D(int16_t x, int16_t y, int16_t z);
 
@@ -96,7 +93,6 @@ struct Coordinate3D {
      * Returns a coordinate3D after adding another coordinate3D to it.
      *
      * @param rhs : const Coordinate3D &
-     *
      * @return Coordinate3D
      */
     Coordinate3D &operator+=(const Coordinate3D &rhs);
@@ -107,7 +103,6 @@ struct Coordinate3D {
      * Returns a coordinate3D after subtracting another coordinate3D to it.
      *
      * @param rhs : const Coordinate3D &
-     *
      * @return Coordinate3D
      */
     Coordinate3D &operator-=(const Coordinate3D &rhs);
@@ -118,7 +113,6 @@ struct Coordinate3D {
      * Returns a coordinate3D after multiplying it with an intiger.
      *
      * @param multiplier : const int
-     *
      * @return Coordinate3D
      */
     Coordinate3D &operator*=(const int multiplier);
@@ -129,7 +123,6 @@ struct Coordinate3D {
      * Returns a coordinate3D after dividing it with an intiger.
      *
      * @param divider : const int
-     *
      * @return Coordinate3D
      */
     Coordinate3D &operator/=(const int divider);
@@ -140,7 +133,6 @@ struct Coordinate3D {
      * Returns a coordinate3D after adding another coordinate3D to it.
      *
      * @param rhs : const Coordinate3D &
-     *
      * @return Coordinate3D
      */
     Coordinate3D operator+(const Coordinate3D &rhs) const;
@@ -151,7 +143,6 @@ struct Coordinate3D {
      * Returns a coordinate3D after subtracting another coordinate3D to it.
      *
      * @param rhs : const Coordinate3D &
-     *
      * @return Coordinate3D
      */
     Coordinate3D operator-(const Coordinate3D &rhs) const;
@@ -161,7 +152,6 @@ struct Coordinate3D {
      * Returns a coordinate3D after dividing it with an intiger.
      *
      * @param divider : const int
-     *
      * @return Coordinate3D
      */
     Coordinate3D operator/(const int divider) const;
@@ -171,7 +161,6 @@ struct Coordinate3D {
      * Returns a coordinate3D after multiplying it with an intiger.
      *
      * @param multiplier : const int
-     *
      * @return Coordinate3D
      */
     Coordinate3D operator*(const int multiplier) const;
