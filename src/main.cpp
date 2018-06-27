@@ -16,13 +16,13 @@ int main() {
     sensor.calibrate();
 
     for (int i = 0; i < 20; i++) {
-        hwlib::cout << "Accelerator: \r\n";
+        hwlib::cout << "Accelerator: \n";
         sensor.printAccelerationGravity();
 
-        hwlib::cout << "Gyroscope: \r\n";
+        hwlib::cout << "Gyroscope: \n";
         sensor.printGyroscopeDegreeSec();
 
-        hwlib::cout << "\r\n";
+        hwlib::cout << "\n";
         hwlib::wait_ms(1000);
     }
     return 0;
