@@ -8,7 +8,7 @@
  * @license     MIT
  */
 
-enum addresses : uint8_t {
+enum class Addresses : uint8_t {
     MPUREG_USER_CTRL = 0x6A,
     MPUREG_I2C_MST_CTRL = 0x24,
 

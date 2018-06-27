@@ -15,14 +15,16 @@ MPU9250Interface::MPU9250Interface(hwlib::pin_oc &scl, hwlib::pin_oc &sda, const
     uint8_t magnReadFlag[1] = {0x0C | 0x80}, readData[1] = {0x87}, continious[1] = {0x06}, bypass[1] = {0x22};
     /// All the I2C data addresses are pointers, because HWLIB only accepts them as such
 
-    i2c.write(AK8963_CNTL1, continious, 1);           // start continious mode AK8963
-    i2c.write(MPUREG_I2C_SLV0_ADDR, magnReadFlag, 1); // Set the I2C slave addres of AK8963 and set for read.
-    i2c.write(MPUREG_I2C_SLV0_REG, data, 1);          // I2C slave 0 register address from where to begin data transfe
-    i2c.write(MPUREG_I2C_SLV0_CTRL, readData, 1);     // Read 6 bytes from the magnetometer
+    i2c.write(static_cast<uint8_t>(Addresses::AK8963_CNTL1), continious, 1); // start continious mode AK8963
+    i2c.write(static_cast<uint8_t>(Addresses::MPUREG_I2C_SLV0_ADDR), magnReadFlag,
+              1); // Set the I2C slave addres of AK8963 and set for read.
+    i2c.write(static_cast<uint8_t>(Addresses::MPUREG_I2C_SLV0_REG), data,
+              1); // I2C slave 0 register address from where to begin data transfe
+    i2c.write(static_cast<uint8_t>(Addresses::MPUREG_I2C_SLV0_CTRL), readData, 1); // Read 6 bytes from the magnetometer
 
     hwlib::wait_us(10000);
 
-    i2c.write(INT_PIN_CFG, bypass, 1); // set bypass mode
+    i2c.write(static_cast<uint8_t>(Addresses::INT_PIN_CFG), bypass, 1); // set bypass mode
 }
 
 void MPU9250Interface::calibrate() {
