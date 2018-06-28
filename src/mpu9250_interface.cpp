@@ -13,13 +13,13 @@ MPU9250Interface::MPU9250Interface(hwlib::pin_oc &scl, hwlib::pin_oc &sda, const
 
     uint8_t data[7] = {0x03}; ///< I2C slave 0 register address for AK8963  data
     uint8_t magnReadFlag[1] = {0x0C | 0x80}, readData[1] = {0x87}, continious[1] = {0x06}, bypass[1] = {0x22};
-    /// All the I2C data addresses are pointers, because HWLIB only accepts them as such
+    ///< All the I2C data addresses are pointers, because HWLIB only accepts them as such
 
     i2c.write(static_cast<uint8_t>(Addresses::AK8963_CNTL1), continious, 1); // start continious mode AK8963
     i2c.write(static_cast<uint8_t>(Addresses::MPUREG_I2C_SLV0_ADDR), magnReadFlag,
-              1); // Set the I2C slave addres of AK8963 and set for read.
+              1); ///< Set the I2C slave addres of AK8963 and set for read.
     i2c.write(static_cast<uint8_t>(Addresses::MPUREG_I2C_SLV0_REG), data,
-              1); // I2C slave 0 register address from where to begin data transfe
+              1); ///< I2C slave 0 register address from where to begin data transfe
     i2c.write(static_cast<uint8_t>(Addresses::MPUREG_I2C_SLV0_CTRL), readData, 1); // Read 6 bytes from the magnetometer
 
     hwlib::wait_us(10000);
@@ -55,8 +55,8 @@ Coordinate3D MPU9250Interface::getAccelerationValues() {
     i2c.write(MPUAddr, data, 1);
     i2c.read(MPUAddr, data, 6);
 
-    // ACCEL_XOUT_H | WITH ACCEL_XOUT_L. 16bit ADC, so divided into 2 bytes. First shift the first one 8 places (1 byte) to the
-    // left. Because you receive bit 15 to 8 first. Then you "OR" it with the second byte. "OR", because these places are all o.
+    ///< ACCEL_XOUT_H | WITH ACCEL_XOUT_L. 16bit ADC, so divided into 2 bytes. First shift the first one 8 places (1 byte) to the
+    ///< left. Because you receive bit 15 to 8 first. Then you "OR" it with the second byte. "OR", because these places are all o.
     values.setX((static_cast<int16_t>(data[0] << 8) | static_cast<int16_t>(data[1])));
     values.setY((static_cast<int16_t>(data[2] << 8) | static_cast<int16_t>(data[3])));
     values.setZ((static_cast<int16_t>(data[4] << 8) | static_cast<int16_t>(data[5])));
@@ -92,8 +92,8 @@ void MPU9250Interface::saveAccelerationValues() {
 void MPU9250Interface::saveGyroscopeValues() {
     uint8_t data[6] = {0x43}; ///< address where MPU data starts
 
-    i2c.write(MPUAddr, data, 1); // Write 1 byte to MPU
-    i2c.read(MPUAddr, data, 6);  // Read 12
+    i2c.write(MPUAddr, data, 1); ///< Write 1 byte to MPU
+    i2c.read(MPUAddr, data, 6);  ///< Read 12
 
     gyroscopeValues.setX((static_cast<int16_t>(data[0] << 8) | static_cast<int16_t>(data[1])));
     gyroscopeValues.setY((static_cast<int16_t>(data[2] << 8) | static_cast<int16_t>(data[3])));
@@ -106,11 +106,11 @@ Coordinate3D MPU9250Interface::getMagnetometerValues() {
 
     while (magnetometerValues.getX() == 0 && magnetometerValues.getY() == 0 && magnetometerValues.getZ() == 0) {
         i2c.read(MPUAddr, data, 7);
-        // must start your read from AK8963A register 0x03 and read seven bytes so that upon read of ST2 register 0x09 the AK8963A
-        // will unlatch the data registers for the next measurement
+        ///< must start your read from AK8963A register 0x03 and read seven bytes so that upon read of ST2 register 0x09 the AK8963A
+        ///< will unlatch the data registers for the next measurement
         uint8_t c = data[6]; // end data read by reading ST2
 
-        if (!(c & 0x08)) { // Check if magnetometer sensor overflow set, if not then report data
+        if (!(c & 0x08)) { ///< Check if magnetometer sensor overflow set, if not then report data
             values.setX((static_cast<int16_t>(data[1] << 8) | static_cast<int16_t>(data[0])));
             values.setY((static_cast<int16_t>(data[3] << 8) | static_cast<int16_t>(data[2])));
             values.setZ((static_cast<int16_t>(data[5] << 8) | static_cast<int16_t>(data[4])));
